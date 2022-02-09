@@ -1,5 +1,4 @@
-pragma solidity ^0.7.5;
-
+pragma solidity 0.8.11;
 /**
  * @title Proxy
  * @dev Implements delegation of calls to other contracts, with proper

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: agpl-3.0
-pragma solidity 0.7.5;
+pragma solidity 0.8.11;
 
 import {SafeMath} from '../../open-zeppelin/SafeMath.sol';
 import {ERC20} from '../../open-zeppelin/ERC20.sol';

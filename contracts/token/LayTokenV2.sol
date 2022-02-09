@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: agpl-3.0
-pragma solidity 0.7.5;
+pragma solidity 0.8.11;
 
 import {ERC20} from '../open-zeppelin/ERC20.sol';
 import {ITransferHook} from '../interfaces/ITransferHook.sol';
@@ -135,7 +135,7 @@ contract LayTokenV2 is GovernancePowerDelegationERC20, VersionedInitializable {
 
     // caching the lay governance address to avoid multiple state loads
     ITransferHook layGovernance = _layGovernance;
-    if (layGovernance != ITransferHook(0)) {
+    if (layGovernance != ITransferHook(address(0))) {
       layGovernance.onTransfer(from, to, amount);
     }
   }
