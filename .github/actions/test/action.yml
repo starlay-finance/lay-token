@@ -5,4 +5,4 @@ runs:
   steps:
     - name: test
       shell: sh
-      run: docker-compose f docker-compose.test.yml run contracts-env npm run test
+      run: docker-compose -f docker-compose.test.yml run contracts-env npm run test
