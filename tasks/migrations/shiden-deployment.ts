@@ -6,7 +6,7 @@ import { eContractid } from '../../helpers/types';
 import { checkVerification } from '../../helpers/etherscan-verification';
 import { getLayAdminPerNetwork, getLendTokenPerNetwork } from '../../helpers/constants';
 
-task('main-deployment', 'Deployment in mainnet network')
+task('shiden-deployment', 'Deployment in shiden network')
   .addFlag(
     'verify',
     'Verify LayToken, LendToLayMigrator, and InitializableAdminUpgradeabilityProxy contract.'
@@ -19,7 +19,7 @@ task('main-deployment', 'Deployment in mainnet network')
 
     if (!LayAdmin) {
       throw Error(
-        'The --admin parameter must be set for mainnet network. Set an Ethereum address as --admin parameter input.'
+        'The --admin parameter must be set for shiden network. Set an Ethereum address as --admin parameter input.'
       );
     }
 
@@ -48,5 +48,5 @@ task('main-deployment', 'Deployment in mainnet network')
       onlyProxy: true,
     });
 
-    console.log('\n✔️ Finished the deployment of the Lay Token Mainnet Enviroment. ✔️');
+    console.log('\n✔️ Finished the deployment of the Lay Token Shiden Enviroment. ✔️');
   });

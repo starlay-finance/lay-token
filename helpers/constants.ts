@@ -18,12 +18,12 @@ export const getLayTokenDomainSeparatorPerNetwork = (network: eEthereumNetwork):
   getParamPerNetwork<tEthereumAddress>(
     {
       [eEthereumNetwork.coverage]:
-        '0x6334ce07fc771d21f0634439a587b364f00756c209bb425d2c4873b672e6d265', // TODO: fix
+        '0x6334ce07fc771d21f0634439a587b364f00756c209bb425d2c4873b672e6d265',
       [eEthereumNetwork.hardhat]:
-        '0x199a7af9929982744df0725704a9dcbfc5809292509419575dca5613a7d9fb91', // TODO: fix
+        '0x199a7af9929982744df0725704a9dcbfc5809292509419575dca5613a7d9fb91',
       [eEthereumNetwork.kovan]: '',
-      [eEthereumNetwork.ropsten]: '',
-      [eEthereumNetwork.main]: '',
+      [eEthereumNetwork.shibuya]: '',
+      [eEthereumNetwork.shiden]: '',
     },
     network
   );
@@ -35,8 +35,8 @@ export const getLayAdminPerNetwork = (network: eEthereumNetwork): tEthereumAddre
       [eEthereumNetwork.coverage]: ZERO_ADDRESS,
       [eEthereumNetwork.hardhat]: ZERO_ADDRESS,
       [eEthereumNetwork.kovan]: '0x8134929c3dcb1b8b82f27f53424b959fb82182f2', // TODO: fix
-      [eEthereumNetwork.ropsten]: '0xEd93e49A2d75beA505fD4D1A0Dff745f69F2E997', // TODO: fix
-      [eEthereumNetwork.main]: '0x8a2Efd9A790199F4c94c6effE210fce0B4724f52', // TODO: fix
+      [eEthereumNetwork.shibuya]: '0x8134929c3dcb1b8b82f27f53424b959fb82182f2', // TODO: fix
+      [eEthereumNetwork.shiden]: '0xEd93e49A2d75beA505fD4D1A0Dff745f69F2E997', // TODO: fix
     },
     network
   );
@@ -46,9 +46,9 @@ export const getLendTokenPerNetwork = (network: eEthereumNetwork): tEthereumAddr
     {
       [eEthereumNetwork.coverage]: ZERO_ADDRESS,
       [eEthereumNetwork.hardhat]: ZERO_ADDRESS,
-      [eEthereumNetwork.kovan]: '0x690eaca024935aaff9b14b9ff9e9c8757a281f3c', // TODO: fix
-      [eEthereumNetwork.ropsten]: '0xb47f338ec1e3857bb188e63569aebab036ee67c6', // TODO: fix
-      [eEthereumNetwork.main]: '0x80fB784B7eD66730e8b1DBd9820aFD29931aab03', // TODO: fix
+      [eEthereumNetwork.kovan]: '0x8134929c3dcb1b8b82f27f53424b959fb82182f2', // TODO: fix
+      [eEthereumNetwork.shibuya]: '0x8134929c3dcb1b8b82f27f53424b959fb82182f2', // TODO: fix
+      [eEthereumNetwork.shiden]: '0xEd93e49A2d75beA505fD4D1A0Dff745f69F2E997', // TODO: fix
     },
     network
   );

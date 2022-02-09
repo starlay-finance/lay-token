@@ -1,8 +1,8 @@
-import {eEthereumNetwork} from './helpers/types-common';
+import { eEthereumNetwork } from './helpers/types-common';
 // @ts-ignore
-import {accounts} from './test-wallets.js';
-import {BUIDLEREVM_CHAINID, COVERAGE_CHAINID} from './helpers/constants';
-import {HardhatUserConfig} from 'hardhat/config';
+import { accounts } from './test-wallets.js';
+import { BUIDLEREVM_CHAINID, COVERAGE_CHAINID } from './helpers/constants';
+import { HardhatUserConfig } from 'hardhat/config';
 
 import 'hardhat-typechain';
 import 'solidity-coverage';
@@ -44,31 +44,11 @@ const mainnetFork = MAINNET_FORK
     }
   : undefined;
 
-const getCommonNetworkConfig = (networkName: eEthereumNetwork, networkId: number) => {
-  return {
-    url: ALCHEMY_KEY
-      ? `https://eth-${
-          networkName === 'main' ? 'mainnet' : networkName
-        }.alchemyapi.io/v2/${ALCHEMY_KEY}`
-      : `https://${networkName}.infura.io/v3/${INFURA_KEY}`,
-    hardfork: HARDFORK,
-    blockGasLimit: DEFAULT_BLOCK_GAS_LIMIT,
-    gasMultiplier: DEFAULT_GAS_PRICE,
-    chainId: networkId,
-    accounts: {
-      mnemonic: MNEMONIC,
-      path: MNEMONIC_PATH,
-      initialIndex: 0,
-      count: 20,
-    },
-  };
-};
-
 const config: HardhatUserConfig = {
   solidity: {
     version: '0.7.5',
     settings: {
-      optimizer: {enabled: true, runs: 200},
+      optimizer: { enabled: true, runs: 200 },
       evmVersion: 'istanbul',
     },
   },
@@ -82,9 +62,47 @@ const config: HardhatUserConfig = {
     timeout: 0,
   },
   networks: {
-    kovan: getCommonNetworkConfig(eEthereumNetwork.kovan, 42),
-    ropsten: getCommonNetworkConfig(eEthereumNetwork.ropsten, 3),
-    main: getCommonNetworkConfig(eEthereumNetwork.main, 1),
+    kovan: {
+      url: ALCHEMY_KEY
+        ? `https://eth-kovan.alchemyapi.io/v2/${ALCHEMY_KEY}`
+        : `https://kovan.infura.io/v3/${INFURA_KEY}`,
+      hardfork: HARDFORK,
+      blockGasLimit: DEFAULT_BLOCK_GAS_LIMIT,
+      gasMultiplier: DEFAULT_GAS_PRICE,
+      chainId: 42,
+      accounts: {
+        mnemonic: MNEMONIC,
+        path: MNEMONIC_PATH,
+        initialIndex: 0,
+        count: 20,
+      },
+    },
+    shibuya: {
+      url: 'https://rpc.shibuya.astar.network:8545',
+      hardfork: HARDFORK,
+      blockGasLimit: DEFAULT_BLOCK_GAS_LIMIT,
+      gasMultiplier: DEFAULT_GAS_PRICE,
+      chainId: 81,
+      accounts: {
+        mnemonic: MNEMONIC,
+        path: MNEMONIC_PATH,
+        initialIndex: 0,
+        count: 20,
+      },
+    },
+    astar: {
+      url: 'https://rpc.shiden.astar.network:8545',
+      hardfork: HARDFORK,
+      blockGasLimit: DEFAULT_BLOCK_GAS_LIMIT,
+      gasMultiplier: DEFAULT_GAS_PRICE,
+      chainId: 336,
+      accounts: {
+        mnemonic: MNEMONIC,
+        path: MNEMONIC_PATH,
+        initialIndex: 0,
+        count: 20,
+      },
+    },
     hardhat: {
       hardfork: 'istanbul',
       blockGasLimit: DEFAULT_BLOCK_GAS_LIMIT,
@@ -93,7 +111,7 @@ const config: HardhatUserConfig = {
       chainId: BUIDLEREVM_CHAINID,
       throwOnTransactionFailures: true,
       throwOnCallFailures: true,
-      accounts: accounts.map(({secretKey, balance}: {secretKey: string; balance: string}) => ({
+      accounts: accounts.map(({ secretKey, balance }: { secretKey: string; balance: string }) => ({
         privateKey: secretKey,
         balance,
       })),

@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import {eEthereumNetwork} from './types-common';
+import { eEthereumNetwork } from './types-common';
 
 export enum eContractid {
   LayToken = 'LayToken',
@@ -27,6 +27,6 @@ export interface iParamsPerNetwork<T> {
   [eEthereumNetwork.coverage]: T;
   [eEthereumNetwork.hardhat]: T;
   [eEthereumNetwork.kovan]: T;
-  [eEthereumNetwork.ropsten]: T;
-  [eEthereumNetwork.main]: T;
+  [eEthereumNetwork.shibuya]: T;
+  [eEthereumNetwork.shiden]: T;
 }

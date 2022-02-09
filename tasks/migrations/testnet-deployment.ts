@@ -6,7 +6,7 @@ import { eEthereumNetwork } from '../../helpers/types-common';
 import { getLayAdminPerNetwork, getLendTokenPerNetwork } from '../../helpers/constants';
 import { checkVerification } from '../../helpers/etherscan-verification';
 
-task('testnet-deployment', 'Deployment in mainnet network')
+task('testnet-deployment', 'Deployment in shiden network')
   .addFlag(
     'verify',
     'Verify LayToken, LendToLayMigrator, and InitializableAdminUpgradeabilityProxy contract.'
@@ -19,7 +19,7 @@ task('testnet-deployment', 'Deployment in mainnet network')
 
     if (!LayAdmin) {
       throw Error(
-        'The --admin parameter must be set for mainnet network. Set an Ethereum address as --admin parameter input.'
+        'The --admin parameter must be set for shiden network. Set an Ethereum address as --admin parameter input.'
       );
     }
 

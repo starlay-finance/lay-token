@@ -2,11 +2,11 @@ import BigNumber from 'bignumber.js';
 import BN = require('bn.js');
 import low from 'lowdb';
 import FileSync from 'lowdb/adapters/FileSync';
-import {WAD} from './constants';
-import {Wallet, ContractTransaction} from 'ethers';
-import {HardhatRuntimeEnvironment} from 'hardhat/types';
-import {iParamsPerNetwork} from './types';
-import {eEthereumNetwork} from './types-common';
+import { WAD } from './constants';
+import { Wallet, ContractTransaction } from 'ethers';
+import { HardhatRuntimeEnvironment } from 'hardhat/types';
+import { iParamsPerNetwork } from './types';
+import { eEthereumNetwork } from './types-common';
 
 export const toWad = (value: string | number) => new BigNumber(value).times(WAD).toFixed();
 
@@ -21,7 +21,7 @@ export const setDRE = (_DRE: HardhatRuntimeEnvironment) => {
 };
 
 export const getParamPerNetwork = <T>(
-  {kovan, ropsten, main, hardhat, coverage}: iParamsPerNetwork<T>,
+  { kovan, shibuya, shiden, hardhat, coverage }: iParamsPerNetwork<T>,
   network: eEthereumNetwork
 ) => {
   switch (network) {
@@ -31,12 +31,10 @@ export const getParamPerNetwork = <T>(
       return hardhat;
     case eEthereumNetwork.kovan:
       return kovan;
-    case eEthereumNetwork.ropsten:
-      return ropsten;
-    case eEthereumNetwork.main:
-      return main;
+    case eEthereumNetwork.shibuya:
+      return shibuya;
     default:
-      return main;
+      return shiden;
   }
 };
 
