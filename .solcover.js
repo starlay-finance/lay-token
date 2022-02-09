@@ -12,3 +12,4 @@ module.exports = {
     network_id: 1337,
   },
 };
+

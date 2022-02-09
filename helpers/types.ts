@@ -2,15 +2,15 @@ import BigNumber from 'bignumber.js';
 import {eEthereumNetwork} from './types-common';
 
 export enum eContractid {
-  AaveToken = 'AaveToken',
-  AaveTokenV2 = 'AaveTokenV2',
-  AaveTokenImpl = 'AaveTokenImpl',
-  LendToAaveMigrator = 'LendToAaveMigrator',
+  LayToken = 'LayToken',
+  LayTokenV2 = 'LayTokenV2',
+  LayTokenImpl = 'LayTokenImpl',
+  LendToLayMigrator = 'LendToLayMigrator',
   IERC20Detailed = 'IERC20Detailed',
   AdminUpgradeabilityProxy = 'AdminUpgradeabilityProxy',
   InitializableAdminUpgradeabilityProxy = 'InitializableAdminUpgradeabilityProxy',
   MintableErc20 = 'MintableErc20',
-  LendToAaveMigratorImpl = 'LendToAaveMigratorImpl',
+  LendToLayMigratorImpl = 'LendToLayMigratorImpl',
   DoubleTransferHelper = 'DoubleTransferHelper',
   MockTransferHook = 'MockTransferHook',
 }

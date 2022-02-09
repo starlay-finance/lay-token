@@ -5,14 +5,14 @@ import "../interfaces/IERC20.sol";
 
 contract DoubleTransferHelper {
 
-    IERC20 public immutable AAVE;
+    IERC20 public immutable LAY;
 
-    constructor(IERC20 aave) public {
-        AAVE = aave;
+    constructor(IERC20 lay) public {
+        LAY = lay;
     }
 
     function doubleSend(address to, uint256 amount1, uint256 amount2) external {
-        AAVE.transfer(to, amount1);
-        AAVE.transfer(to, amount2);
+        LAY.transfer(to, amount1);
+        LAY.transfer(to, amount2);
     }
 }
