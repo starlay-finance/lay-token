@@ -1,8 +1,8 @@
-import {exit} from 'process';
+import { exit } from 'process';
 import fs from 'fs';
 import globby from 'globby';
-import {file} from 'tmp-promise';
-import {DRE} from './misc-utils';
+import { file } from 'tmp-promise';
+import { DRE } from './misc-utils';
 
 const listSolidityFiles = (dir: string) => globby(`${dir}/**/*.sol`);
 
@@ -54,7 +54,7 @@ export const verifyContract = async (
     const msDelay = 3000;
     const times = 15;
     // Write a temporal file to host complex parameters for buidler-etherscan https://github.com/nomiclabs/buidler/tree/development/packages/buidler-etherscan#complex-arguments
-    const {fd, path, cleanup} = await file({
+    const { fd, path, cleanup } = await file({
       prefix: 'verify-params-',
       postfix: '.js',
     });
@@ -90,7 +90,7 @@ export const runTaskWithRetry = async (
         '[ETHERSCAN][ERROR] Errors after all the retries, check the logs for more information.'
       );
     }
-  } catch (error) {
+  } catch (error: any) {
     counter--;
     console.info(`[ETHERSCAN][[INFO] Retrying attemps: ${counter}.`);
     console.error('[ETHERSCAN][[ERROR]', error.message);

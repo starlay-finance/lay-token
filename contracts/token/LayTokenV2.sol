@@ -8,14 +8,14 @@ import {GovernancePowerDelegationERC20} from './base/GovernancePowerDelegationER
 import {SafeMath} from '../open-zeppelin/SafeMath.sol';
 
 /**
- * @notice implementation of the AAVE token contract
- * @author Aave
+ * @notice implementation of the LAY token contract
+ * @author Lay
  */
-contract AaveTokenV2 is GovernancePowerDelegationERC20, VersionedInitializable {
+contract LayTokenV2 is GovernancePowerDelegationERC20, VersionedInitializable {
   using SafeMath for uint256;
 
-  string internal constant NAME = 'Aave Token';
-  string internal constant SYMBOL = 'AAVE';
+  string internal constant NAME = 'Lay Token';
+  string internal constant SYMBOL = 'LAY';
   uint8 internal constant DECIMALS = 18;
 
   uint256 public constant REVISION = 2;
@@ -27,10 +27,10 @@ contract AaveTokenV2 is GovernancePowerDelegationERC20, VersionedInitializable {
 
   mapping(address => uint256) public _votingSnapshotsCounts;
 
-  /// @dev reference to the Aave governance contract to call (if initialized) on _beforeTokenTransfer
-  /// !!! IMPORTANT The Aave governance is considered a trustable contract, being its responsibility
-  /// to control all potential reentrancies by calling back the AaveToken
-  ITransferHook public _aaveGovernance;
+  /// @dev reference to the Lay governance contract to call (if initialized) on _beforeTokenTransfer
+  /// !!! IMPORTANT The Lay governance is considered a trustable contract, being its responsibility
+  /// to control all potential reentrancies by calling back the LayToken
+  ITransferHook public _layGovernance;
 
   bytes32 public DOMAIN_SEPARATOR;
   bytes public constant EIP712_REVISION = bytes('1');
@@ -133,10 +133,10 @@ contract AaveTokenV2 is GovernancePowerDelegationERC20, VersionedInitializable {
       DelegationType.PROPOSITION_POWER
     );
 
-    // caching the aave governance address to avoid multiple state loads
-    ITransferHook aaveGovernance = _aaveGovernance;
-    if (aaveGovernance != ITransferHook(0)) {
-      aaveGovernance.onTransfer(from, to, amount);
+    // caching the lay governance address to avoid multiple state loads
+    ITransferHook layGovernance = _layGovernance;
+    if (layGovernance != ITransferHook(0)) {
+      layGovernance.onTransfer(from, to, amount);
     }
   }
 

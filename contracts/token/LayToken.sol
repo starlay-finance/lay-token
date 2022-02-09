@@ -7,10 +7,10 @@ import {VersionedInitializable} from '../utils/VersionedInitializable.sol';
 import {SafeMath} from '../open-zeppelin/SafeMath.sol';
 
 /**
- * @notice implementation of the AAVE token contract
- * @author Aave
+ * @notice implementation of the LAY token contract
+ * @author Lay
  */
-contract AaveToken is ERC20, VersionedInitializable {
+contract LayToken is ERC20, VersionedInitializable {
   using SafeMath for uint256;
 
   /// @dev snapshot of a value on a specific block, used for balances
@@ -19,11 +19,11 @@ contract AaveToken is ERC20, VersionedInitializable {
     uint128 value;
   }
 
-  string internal constant NAME = 'Aave Token';
-  string internal constant SYMBOL = 'AAVE';
+  string internal constant NAME = 'Lay Token';
+  string internal constant SYMBOL = 'LAY';
   uint8 internal constant DECIMALS = 18;
 
-  /// @dev the amount being distributed for the LEND -> AAVE migration
+  /// @dev the amount being distributed for the LEND -> LAY migration
   uint256 internal constant MIGRATION_AMOUNT = 13000000 ether;
 
   /// @dev the amount being distributed for the PSI and PEI
@@ -38,10 +38,10 @@ contract AaveToken is ERC20, VersionedInitializable {
 
   mapping(address => uint256) public _countsSnapshots;
 
-  /// @dev reference to the Aave governance contract to call (if initialized) on _beforeTokenTransfer
-  /// !!! IMPORTANT The Aave governance is considered a trustable contract, being its responsibility
-  /// to control all potential reentrancies by calling back the AaveToken
-  ITransferHook public _aaveGovernance;
+  /// @dev reference to the Lay governance contract to call (if initialized) on _beforeTokenTransfer
+  /// !!! IMPORTANT The Lay governance is considered a trustable contract, being its responsibility
+  /// to control all potential reentrancies by calling back the LayToken
+  ITransferHook public _starleyGovernance;
 
   bytes32 public DOMAIN_SEPARATOR;
   bytes public constant EIP712_REVISION = bytes('1');
@@ -58,13 +58,13 @@ contract AaveToken is ERC20, VersionedInitializable {
 
   /**
    * @dev initializes the contract upon assignment to the InitializableAdminUpgradeabilityProxy
-   * @param migrator the address of the LEND -> AAVE migration contract
-   * @param distributor the address of the AAVE distribution contract
+   * @param migrator the address of the LEND -> LAY migration contract
+   * @param distributor the address of the LAY distribution contract
    */
   function initialize(
     address migrator,
     address distributor,
-    ITransferHook aaveGovernance
+    ITransferHook starleyGovernance
   ) external initializer {
     uint256 chainId;
 
@@ -85,7 +85,7 @@ contract AaveToken is ERC20, VersionedInitializable {
     _name = NAME;
     _symbol = SYMBOL;
     _setupDecimals(DECIMALS);
-    _aaveGovernance = aaveGovernance;
+    _starleyGovernance = starleyGovernance;
     _mint(migrator, MIGRATION_AMOUNT);
     _mint(distributor, DISTRIBUTION_AMOUNT);
   }
@@ -191,10 +191,10 @@ contract AaveToken is ERC20, VersionedInitializable {
       _writeSnapshot(to, uint128(toBalance), uint128(toBalance.add(amount)));
     }
 
-    // caching the aave governance address to avoid multiple state loads
-    ITransferHook aaveGovernance = _aaveGovernance;
-    if (aaveGovernance != ITransferHook(0)) {
-      aaveGovernance.onTransfer(from, to, amount);
+    // caching the starlay governance address to avoid multiple state loads
+    ITransferHook starleyGovernance = _starleyGovernance;
+    if (starleyGovernance != ITransferHook(0)) {
+      starleyGovernance.onTransfer(from, to, amount);
     }
   }
 }

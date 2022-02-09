@@ -7,16 +7,16 @@ import {VersionedInitializable} from "../utils/VersionedInitializable.sol";
 
 
 /**
-* @title LendToAaveMigrator
-* @notice This contract implements the migration from LEND to AAVE token
-* @author Aave 
+* @title LendToLayMigrator
+* @notice This contract implements the migration from LEND to LAY token
+* @author Lay 
 */
-contract LendToAaveMigrator is VersionedInitializable {
+contract LendToLayMigrator is VersionedInitializable {
     using SafeMath for uint256;
 
-    IERC20 public immutable AAVE;
+    IERC20 public immutable LAY;
     IERC20 public immutable LEND;
-    uint256 public immutable LEND_AAVE_RATIO;
+    uint256 public immutable LEND_LAY_RATIO;
     uint256 public constant REVISION = 1;
     
     uint256 public _totalLendMigrated;
@@ -29,14 +29,14 @@ contract LendToAaveMigrator is VersionedInitializable {
     event LendMigrated(address indexed sender, uint256 indexed amount);
 
     /**
-    * @param aave the address of the AAVE token
+    * @param lay the address of the LAY token
     * @param lend the address of the LEND token
-    * @param lendAaveRatio the exchange rate between LEND and AAVE 
+    * @param lendLayRatio the exchange rate between LEND and LAY 
      */
-    constructor(IERC20 aave, IERC20 lend, uint256 lendAaveRatio) public {
-        AAVE = aave;
+    constructor(IERC20 lay, IERC20 lend, uint256 lendLayRatio) public {
+        LAY = lay;
         LEND = lend;
-        LEND_AAVE_RATIO = lendAaveRatio;
+        LEND_LAY_RATIO = lendLayRatio;
     }
 
     /**
@@ -54,7 +54,7 @@ contract LendToAaveMigrator is VersionedInitializable {
 
 
     /**
-    * @dev executes the migration from LEND to AAVE. Users need to give allowance to this contract to transfer LEND before executing
+    * @dev executes the migration from LEND to LAY. Users need to give allowance to this contract to transfer LEND before executing
     * this transaction.
     * @param amount the amount of LEND to be migrated
     */
@@ -63,7 +63,7 @@ contract LendToAaveMigrator is VersionedInitializable {
 
         _totalLendMigrated = _totalLendMigrated.add(amount);
         LEND.transferFrom(msg.sender, address(this), amount);
-        AAVE.transfer(msg.sender, amount.div(LEND_AAVE_RATIO));
+        LAY.transfer(msg.sender, amount.div(LEND_LAY_RATIO));
         emit LendMigrated(msg.sender, amount);
     }
 

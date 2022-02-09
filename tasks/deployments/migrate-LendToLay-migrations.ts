@@ -1,7 +1,7 @@
-import {task} from 'hardhat/config';
+import { task } from 'hardhat/config';
 import BigNumber from 'bignumber.js';
 import {
-  getLendToAaveMigrator,
+  getLendToLayMigrator,
   getLendToken,
   getEthersSigners,
 } from '../../helpers/contracts-helpers';
@@ -17,7 +17,7 @@ task(`Lend-Migration`, `Create migration to test the contracts`).setAction(async
   const [, , user1, user2] = await getEthersSigners();
 
   const mockLend = await getLendToken();
-  const lendToAaveMigrator = await getLendToAaveMigrator();
+  const lendToLayMigrator = await getLendToLayMigrator();
 
   const lendAmount = 1000;
   const lendTokenAmount = new BigNumber(lendAmount).times(new BigNumber(10).pow(18)).toFixed(0);
@@ -28,12 +28,12 @@ task(`Lend-Migration`, `Create migration to test the contracts`).setAction(async
   await mockLend.connect(user1).mint(lendTokenAmount);
   await mockLend.connect(user2).mint(lendTokenAmount);
 
-  await mockLend.connect(user1).approve(lendToAaveMigrator.address, lendTokenAmount);
-  await mockLend.connect(user2).approve(lendToAaveMigrator.address, lendTokenAmount);
+  await mockLend.connect(user1).approve(lendToLayMigrator.address, lendTokenAmount);
+  await mockLend.connect(user2).approve(lendToLayMigrator.address, lendTokenAmount);
 
-  await lendToAaveMigrator.connect(user1).migrateFromLEND(halfLendTokenAmount);
-  await lendToAaveMigrator.connect(user1).migrateFromLEND(halfLendTokenAmount);
-  await lendToAaveMigrator.connect(user2).migrateFromLEND(lendTokenAmount);
+  await lendToLayMigrator.connect(user1).migrateFromLEND(halfLendTokenAmount);
+  await lendToLayMigrator.connect(user1).migrateFromLEND(halfLendTokenAmount);
+  await lendToLayMigrator.connect(user2).migrateFromLEND(lendTokenAmount);
 
   console.log(`\n- Finished migrating lend balances`);
 });
