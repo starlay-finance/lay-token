@@ -13,6 +13,7 @@ export enum eContractid {
   LendToLayMigratorImpl = 'LendToLayMigratorImpl',
   DoubleTransferHelper = 'DoubleTransferHelper',
   MockTransferHook = 'MockTransferHook',
+  TokenVesting = 'TokenVesting',
 }
 
 export enum ProtocolErrors {}

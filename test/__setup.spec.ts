@@ -9,6 +9,7 @@ import {
   insertContractAddressInDb,
   registerContractInJsonDb,
   deployMockTransferHook,
+  deployVesting,
 } from '../helpers/contracts-helpers';
 
 import path from 'path';
@@ -33,8 +34,9 @@ const buildTestEnv = async (deployer: Signer, secondaryWallet: Signer) => {
   const layTokenImpl = await deployLayToken();
 
   const layTokenProxy = await deployInitializableAdminUpgradeabilityProxy();
-
   const mockLendToken = await deployMintableErc20(['LEND token', 'LEND', 18]);
+  //const vesting = await deployVesting(layTokenProxy.address);
+  //await insertContractAddressInDb(eContractid.TokenVesting, vesting.address);
   await registerContractInJsonDb('LEND', mockLendToken);
 
   const lendTolayMigratorImpl = await deployLendToLayMigrator([

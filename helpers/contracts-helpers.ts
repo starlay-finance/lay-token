@@ -1,3 +1,4 @@
+import { TokenVesting } from './../types/TokenVesting.d';
 import { LayTokenV2 } from './../types/LayTokenV2.d';
 import { LayToken } from './../types/LayToken.d';
 import { LendToLayMigrator } from './../types/LendToLayMigrator.d';
@@ -113,6 +114,17 @@ export const deployLendToLayMigrator = async (
 
 export const deployMintableErc20 = async ([name, symbol, decimals]: [string, string, number]) =>
   await deployContract<MintableErc20>(eContractid.MintableErc20, [name, symbol, decimals]);
+
+export const deployVesting = async (layTokenAddress: string, verify?: boolean) => {
+  const id = eContractid.TokenVesting;
+  const args = [layTokenAddress];
+  const instance = await deployContract<TokenVesting>(id, args);
+  await instance.deployTransaction.wait();
+  if (verify) {
+    await verifyContract(id, instance.address, args);
+  }
+  return instance;
+};
 
 export const deployDoubleTransferHelper = async (layToken: tEthereumAddress, verify?: boolean) => {
   const id = eContractid.DoubleTransferHelper;
