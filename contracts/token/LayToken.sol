@@ -24,7 +24,7 @@ contract LayToken is ERC20, VersionedInitializable {
   uint8 internal constant DECIMALS = 18;
 
   /// @dev the amount being distributed for the PSI and PEI
-  uint256 internal constant MIGRATION_AMOUNT = 13000000 ether;
+  uint256 internal constant DISTRIBUTION_AMOUNT = 700000000 ether;
 
   uint256 public constant REVISION = 1;
 
@@ -81,7 +81,7 @@ contract LayToken is ERC20, VersionedInitializable {
     _symbol = SYMBOL;
     _setupDecimals(DECIMALS);
     _starleyGovernance = starleyGovernance;
-    _mint(vestingAddress, MIGRATION_AMOUNT);
+    _mint(vestingAddress, DISTRIBUTION_AMOUNT);
   }
 
   /**

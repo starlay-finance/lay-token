@@ -53,19 +53,13 @@ makeSuite('LAY token', (testEnv: TestEnv) => {
   });
 
   it('Checks the allocation of the initial LAY supply', async () => {
-    const expectedMigratorBalance = new BigNumber(13000000).times(new BigNumber(10).pow(18));
-    const expectedlDistributorBalance = new BigNumber(0).times(new BigNumber(10).pow(18));
+    const expectedDistributionBalance = new BigNumber(700000000).times(new BigNumber(10).pow(18));
     const { layToken, mockVesting } = testEnv;
-    const migratorBalance = await layToken.balanceOf(mockVesting.address);
-    const distributorBalance = await layToken.balanceOf(testEnv.users[0].address);
+    const distributedBalance = await layToken.balanceOf(mockVesting.address);
 
-    expect(migratorBalance.toString()).to.be.equal(
-      expectedMigratorBalance.toFixed(0),
-      'Invalid migrator balance'
-    );
-    expect(distributorBalance.toString()).to.be.equal(
-      expectedlDistributorBalance.toFixed(0),
-      'Invalid migrator balance'
+    expect(distributedBalance.toString()).to.be.equal(
+      expectedDistributionBalance.toFixed(0),
+      'Invalid distribution balance'
     );
   });
 

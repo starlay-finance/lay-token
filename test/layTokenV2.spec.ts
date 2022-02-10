@@ -69,19 +69,13 @@ makeSuite('LAY token V2', (testEnv: TestEnv) => {
   });
 
   it('Checks the allocation of the initial LAY supply', async () => {
-    const expectedMigratorBalance = new BigNumber(13000000).times(new BigNumber(10).pow(18));
-    const expectedlDistributorBalance = new BigNumber(0).times(new BigNumber(10).pow(18));
+    const expectedDistributionBalance = new BigNumber(700000000).times(new BigNumber(10).pow(18));
     const { mockVesting } = testEnv;
-    const migratorBalance = await layTokenV2.balanceOf(mockVesting.address);
-    const distributorBalance = await layTokenV2.balanceOf(testEnv.users[0].address);
+    const distributedBalance = await layTokenV2.balanceOf(mockVesting.address);
 
-    expect(migratorBalance.toString()).to.be.equal(
-      expectedMigratorBalance.toFixed(0),
-      'Invalid migrator balance'
-    );
-    expect(distributorBalance.toString()).to.be.equal(
-      expectedlDistributorBalance.toFixed(0),
-      'Invalid migrator balance'
+    expect(distributedBalance.toString()).to.be.equal(
+      expectedDistributionBalance.toFixed(0),
+      'Invalid distribution balance'
     );
   });
 
@@ -363,6 +357,6 @@ makeSuite('LAY token V2', (testEnv: TestEnv) => {
 
   it('Checks the total supply', async () => {
     const totalSupply = await layTokenV2.totalSupplyAt('0'); // Supply remains constant due no more mints
-    expect(totalSupply).equal(parseEther('13000000'));
+    expect(totalSupply).equal(parseEther('700000000'));
   });
 });
