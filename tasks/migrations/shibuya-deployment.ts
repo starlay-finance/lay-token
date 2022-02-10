@@ -1,13 +1,13 @@
 import { task } from 'hardhat/config';
 import { HardhatRuntimeEnvironment } from 'hardhat/types';
 
-import { eContractid } from '../../helpers/types';
 import { eEthereumNetwork } from '../../helpers/types-common';
-import { getLayAdminPerNetwork } from '../../helpers/constants';
+import { eContractid } from '../../helpers/types';
 import { checkVerification } from '../../helpers/etherscan-verification';
+import { getLayAdminPerNetwork } from '../../helpers/constants';
 require('dotenv').config();
 
-task('testnet-deployment', 'Deployment in shiden network')
+task('shibuya-deployment', 'Deployment in shibuya network')
   .addFlag(
     'verify',
     'Verify LayToken, TokenVesting and InitializableAdminUpgradeabilityProxy contract.'
@@ -19,7 +19,7 @@ task('testnet-deployment', 'Deployment in shiden network')
 
     if (!LayAdmin) {
       throw Error(
-        'The --admin parameter must be set for shiden network. Set an Ethereum address as --admin parameter input.'
+        'The --admin parameter must be set for shibuya network. Set an Ethereum address as --admin parameter input.'
       );
     }
 
@@ -30,12 +30,13 @@ task('testnet-deployment', 'Deployment in shiden network')
 
     console.log('Lay ADMIN', LayAdmin);
     await DRE.run(`deploy-${eContractid.LayToken}`, { verify });
-    await DRE.run(`deploy-${eContractid.TokenVesting}`, { verify });
-
+    await DRE.run(`deploy-${eContractid.TokenVesting}`, {
+      admin: LayAdmin,
+    });
+    // The task will only initialize the proxy contract, not implementation
     await DRE.run(`initialize-${eContractid.LayToken}`, {
       admin: LayAdmin,
-      verify,
     });
 
-    console.log('\n✔️  Finished the deployment of the Lay Token Testnet Enviroment. ✔️');
+    console.log('\n✔️ Finished the deployment of the Lay Token Shibuya Enviroment. ✔️');
   });

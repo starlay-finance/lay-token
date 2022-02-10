@@ -4,6 +4,7 @@ import { HardhatRuntimeEnvironment } from 'hardhat/types';
 import { eContractid } from '../../helpers/types';
 import { getEthersSigners } from '../../helpers/contracts-helpers';
 import { checkVerification } from '../../helpers/etherscan-verification';
+require('dotenv').config();
 
 task('dev-deployment', 'Deployment in hardhat')
   .addFlag('verify', 'Verify LayToken and InitializableAdminUpgradeabilityProxy contract.')

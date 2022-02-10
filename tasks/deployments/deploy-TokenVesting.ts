@@ -19,17 +19,15 @@ task(`deploy-${TokenVesting}`, `Deploy the ${TokenVesting} contract`)
       throw new Error('INVALID_CHAIN_ID');
     }
 
-    console.log(`\n- ${TokenVesting} initialization`);
+    console.log(`\n- ${TokenVesting} deployment`);
     const layToken = await getLayToken();
     const layTokenProxy = await getContract<InitializableAdminUpgradeabilityProxy>(
       eContractid.InitializableAdminUpgradeabilityProxy,
       layToken.address
     );
 
-    console.log('\tInitializing TokenVesting Implementation ');
-
     const tokenVesting = await deployVesting(layTokenProxy.address, verify);
     await registerContractInJsonDb(TokenVesting, tokenVesting);
 
-    console.log('\tFinished TokenVesting Implementation initialization.');
+    console.log('\tFinished TokenVesting Implementation deploymebnt.');
   });

@@ -5,6 +5,7 @@ import { eEthereumNetwork } from '../../helpers/types-common';
 import { eContractid } from '../../helpers/types';
 import { checkVerification } from '../../helpers/etherscan-verification';
 import { getLayAdminPerNetwork } from '../../helpers/constants';
+require('dotenv').config();
 
 task('deploy-v2', 'Deployment of the Lay token V2')
   .addFlag('verify', 'Verify LayTokenV2 contract.')
