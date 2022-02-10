@@ -1,3 +1,4 @@
+import { MockToken } from './../types/MockToken.d';
 import rawBRE from 'hardhat';
 
 import {
@@ -10,6 +11,7 @@ import {
   registerContractInJsonDb,
   deployMockTransferHook,
   deployVesting,
+  deployMockVesting,
 } from '../helpers/contracts-helpers';
 
 import path from 'path';
@@ -20,6 +22,7 @@ import { Signer } from 'ethers';
 import { initializeMakeSuite } from './helpers/make-suite';
 import { waitForTx, DRE } from '../helpers/misc-utils';
 import { eContractid } from '../helpers/types';
+import { parseEther } from 'ethers/lib/utils';
 
 ['misc', 'deployments', 'migrations'].forEach((folder) => {
   const tasksPath = path.join(__dirname, '../tasks', folder);
@@ -32,11 +35,11 @@ const buildTestEnv = async (deployer: Signer, secondaryWallet: Signer) => {
   const layAdmin = await secondaryWallet.getAddress();
 
   const layTokenImpl = await deployLayToken();
-
   const layTokenProxy = await deployInitializableAdminUpgradeabilityProxy();
   const mockLendToken = await deployMintableErc20(['LEND token', 'LEND', 18]);
-  //const vesting = await deployVesting(layTokenProxy.address);
-  //await insertContractAddressInDb(eContractid.TokenVesting, vesting.address);
+  const mockTokenVesting = await deployMockVesting(layTokenProxy.address);
+
+  await insertContractAddressInDb(eContractid.MockTokenVesting, mockTokenVesting.address);
   await registerContractInJsonDb('LEND', mockLendToken);
 
   const lendTolayMigratorImpl = await deployLendToLayMigrator([
@@ -50,7 +53,7 @@ const buildTestEnv = async (deployer: Signer, secondaryWallet: Signer) => {
   const mockTransferHook = await deployMockTransferHook();
 
   const layTokenEncodedInitialize = layTokenImpl.interface.encodeFunctionData('initialize', [
-    lendTolayMigratorProxy.address,
+    mockTokenVesting.address,
     mockTransferHook.address,
   ]);
 
@@ -65,7 +68,7 @@ const buildTestEnv = async (deployer: Signer, secondaryWallet: Signer) => {
   //we will not run the initialize on the migrator - will be executed by the governance to bootstrap the migration
   await waitForTx(
     await lendTolayMigratorProxy['initialize(address,address,bytes)'](
-      lendTolayMigratorImpl.address,
+      mockTokenVesting.address,
       layAdmin,
       '0x'
     )
@@ -80,6 +83,7 @@ const buildTestEnv = async (deployer: Signer, secondaryWallet: Signer) => {
   await insertContractAddressInDb(eContractid.MockTransferHook, mockTransferHook.address);
 
   await insertContractAddressInDb(eContractid.LendToLayMigratorImpl, lendTolayMigratorImpl.address);
+  await insertContractAddressInDb(eContractid.MockTokenVesting, mockTokenVesting.address);
 
   console.timeEnd('setup');
 };

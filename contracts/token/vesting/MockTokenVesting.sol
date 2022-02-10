@@ -11,8 +11,10 @@ import "./TokenVesting.sol";
 contract MockTokenVesting is TokenVesting{
 
     uint256 mockTime = 0;
+        IERC20 immutable private _token;
 
     constructor(address token_) TokenVesting(token_){
+        _token = IERC20(token_);
     }
 
     function setCurrentTime(uint256 _time)
@@ -27,5 +29,12 @@ contract MockTokenVesting is TokenVesting{
         view
         returns(uint256){
         return mockTime;
+    }
+
+    function releaseMock(
+        address beneficiaryPayable,
+        uint256 amount)
+        public{
+        _token.transfer(beneficiaryPayable, amount);
     }
 }

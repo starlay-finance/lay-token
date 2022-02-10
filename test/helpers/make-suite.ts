@@ -7,6 +7,7 @@ import {
   getLendToken,
   getLendToLayMigrator,
   getLendToLayMigratorImpl,
+  getMockTokenVesting,
   getMockTransferHook,
 } from '../../helpers/contracts-helpers';
 import { tEthereumAddress } from '../../helpers/types';
@@ -17,6 +18,7 @@ import bignumberChai from 'chai-bignumber';
 import { MintableErc20 } from '../../types/MintableErc20';
 import { MockTransferHook } from '../../types/MockTransferHook';
 import { LendToLayMigrator } from '../../types/LendToLayMigrator';
+import { MockTokenVesting } from '../../types/MockTokenVesting';
 
 chai.use(bignumberChai());
 
@@ -32,6 +34,7 @@ export interface TestEnv {
   lendToLayMigrator: LendToLayMigrator;
   lendToLayMigratorImpl: LendToLayMigrator;
   mockTransferHook: MockTransferHook;
+  mockVesting: MockTokenVesting;
 }
 
 let buidlerevmSnapshotId: string = '0x1';
@@ -49,6 +52,7 @@ const testEnv: TestEnv = {
   lendToLayMigrator: {} as LendToLayMigrator,
   lendToLayMigratorImpl: {} as LendToLayMigrator,
   mockTransferHook: {} as MockTransferHook,
+  mockVesting: {} as MockTokenVesting,
 } as TestEnv;
 
 export async function initializeMakeSuite() {
@@ -70,6 +74,7 @@ export async function initializeMakeSuite() {
   testEnv.lendToken = await getLendToken();
   testEnv.lendToLayMigratorImpl = await getLendToLayMigratorImpl();
   testEnv.mockTransferHook = await getMockTransferHook();
+  testEnv.mockVesting = await getMockTokenVesting();
 }
 
 export function makeSuite(name: string, tests: (testEnv: TestEnv) => void) {

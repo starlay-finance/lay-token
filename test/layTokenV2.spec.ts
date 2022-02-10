@@ -71,8 +71,8 @@ makeSuite('LAY token V2', (testEnv: TestEnv) => {
   it('Checks the allocation of the initial LAY supply', async () => {
     const expectedMigratorBalance = new BigNumber(13000000).times(new BigNumber(10).pow(18));
     const expectedlDistributorBalance = new BigNumber(0).times(new BigNumber(10).pow(18));
-    const { lendToLayMigrator } = testEnv;
-    const migratorBalance = await layTokenV2.balanceOf(lendToLayMigrator.address);
+    const { lendToLayMigrator, mockVesting } = testEnv;
+    const migratorBalance = await layTokenV2.balanceOf(mockVesting.address);
     const distributorBalance = await layTokenV2.balanceOf(testEnv.users[0].address);
 
     expect(migratorBalance.toString()).to.be.equal(

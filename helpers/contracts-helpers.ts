@@ -1,3 +1,4 @@
+import { MockTokenVesting } from './../types/MockTokenVesting.d';
 import { TokenVesting } from './../types/TokenVesting.d';
 import { LayTokenV2 } from './../types/LayTokenV2.d';
 import { LayToken } from './../types/LayToken.d';
@@ -126,6 +127,17 @@ export const deployVesting = async (layTokenAddress: string, verify?: boolean) =
   return instance;
 };
 
+export const deployMockVesting = async (layTokenAddress: string, verify?: boolean) => {
+  const id = eContractid.MockTokenVesting;
+  const args = [layTokenAddress];
+  const instance = await deployContract<MockTokenVesting>(id, args);
+  await instance.deployTransaction.wait();
+  if (verify) {
+    await verifyContract(id, instance.address, args);
+  }
+  return instance;
+};
+
 export const deployDoubleTransferHelper = async (layToken: tEthereumAddress, verify?: boolean) => {
   const id = eContractid.DoubleTransferHelper;
   const args = [layToken];
@@ -224,6 +236,16 @@ export const getMockTransferHook = async (address?: tEthereumAddress) => {
     address ||
       (
         await getDb().get(`${eContractid.MockTransferHook}.${DRE.network.name}`).value()
+      ).address
+  );
+};
+
+export const getMockTokenVesting = async (address?: tEthereumAddress) => {
+  return await getContract<MockTokenVesting>(
+    eContractid.MockTokenVesting,
+    address ||
+      (
+        await getDb().get(`${eContractid.MockTokenVesting}.${DRE.network.name}`).value()
       ).address
   );
 };

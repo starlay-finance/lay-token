@@ -14,6 +14,7 @@ export enum eContractid {
   DoubleTransferHelper = 'DoubleTransferHelper',
   MockTransferHook = 'MockTransferHook',
   TokenVesting = 'TokenVesting',
+  MockTokenVesting = 'MockTokenVesting',
 }
 
 export enum ProtocolErrors {}
