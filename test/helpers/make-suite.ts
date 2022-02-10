@@ -30,9 +30,6 @@ export interface TestEnv {
   deployer: SignerWithAddress;
   users: SignerWithAddress[];
   layToken: LayToken;
-  lendToken: MintableErc20;
-  lendToLayMigrator: LendToLayMigrator;
-  lendToLayMigratorImpl: LendToLayMigrator;
   mockTransferHook: MockTransferHook;
   mockVesting: MockTokenVesting;
 }
@@ -48,9 +45,6 @@ const testEnv: TestEnv = {
   deployer: {} as SignerWithAddress,
   users: [] as SignerWithAddress[],
   layToken: {} as LayToken,
-  lendToken: {} as MintableErc20,
-  lendToLayMigrator: {} as LendToLayMigrator,
-  lendToLayMigratorImpl: {} as LendToLayMigrator,
   mockTransferHook: {} as MockTransferHook,
   mockVesting: {} as MockTokenVesting,
 } as TestEnv;
@@ -70,9 +64,6 @@ export async function initializeMakeSuite() {
   }
   testEnv.deployer = deployer;
   testEnv.layToken = await getLayToken();
-  testEnv.lendToLayMigrator = await getLendToLayMigrator();
-  testEnv.lendToken = await getLendToken();
-  testEnv.lendToLayMigratorImpl = await getLendToLayMigratorImpl();
   testEnv.mockTransferHook = await getMockTransferHook();
   testEnv.mockVesting = await getMockTokenVesting();
 }

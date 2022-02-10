@@ -71,7 +71,7 @@ makeSuite('LAY token V2', (testEnv: TestEnv) => {
   it('Checks the allocation of the initial LAY supply', async () => {
     const expectedMigratorBalance = new BigNumber(13000000).times(new BigNumber(10).pow(18));
     const expectedlDistributorBalance = new BigNumber(0).times(new BigNumber(10).pow(18));
-    const { lendToLayMigrator, mockVesting } = testEnv;
+    const { mockVesting } = testEnv;
     const migratorBalance = await layTokenV2.balanceOf(mockVesting.address);
     const distributorBalance = await layTokenV2.balanceOf(testEnv.users[0].address);
 
@@ -83,25 +83,6 @@ makeSuite('LAY token V2', (testEnv: TestEnv) => {
       expectedlDistributorBalance.toFixed(0),
       'Invalid migrator balance'
     );
-  });
-
-  it('Starts the migration', async () => {
-    const {
-      lendToLayMigrator: lendToLayMigrator,
-      lendToLayMigratorImpl: lendToLayMigratorImpl,
-      users,
-    } = testEnv;
-
-    const lendToLayMigratorInitializeEncoded =
-      lendToLayMigratorImpl.interface.encodeFunctionData('initialize');
-
-    const migratorAsProxy = await getInitializableAdminUpgradeabilityProxy(
-      lendToLayMigrator.address
-    );
-
-    await migratorAsProxy
-      .connect(users[0].signer)
-      .upgradeToAndCall(lendToLayMigratorImpl.address, lendToLayMigratorInitializeEncoded);
   });
 
   it('Reverts submitting a permit with 0 expiration', async () => {

@@ -69,33 +69,6 @@ makeSuite('LAY token', (testEnv: TestEnv) => {
     );
   });
 
-  it('Starts the migration', async () => {
-    const { lendToLayMigrator, lendToLayMigratorImpl, users } = testEnv;
-
-    const lendToLayMigratorInitializeEncoded =
-      lendToLayMigratorImpl.interface.encodeFunctionData('initialize');
-
-    const migratorAsProxy = await getInitializableAdminUpgradeabilityProxy(
-      lendToLayMigrator.address
-    );
-
-    await migratorAsProxy
-      .connect(users[0].signer)
-      .upgradeToAndCall(lendToLayMigratorImpl.address, lendToLayMigratorInitializeEncoded);
-  });
-
-  it('Checks the snapshots emitted after the initial allocation', async () => {
-    const { layToken, users } = testEnv;
-
-    const userCountOfSnapshots = await layToken._countsSnapshots(users[0].address);
-    const snapshot = await layToken._snapshots(users[0].address, userCountOfSnapshots);
-    expect(userCountOfSnapshots.toString()).to.be.equal('0', 'INVALID_SNAPSHOT_COUNT');
-    expect(snapshot.value.toString()).to.be.equal(
-      ethers.utils.parseEther('0'),
-      'INVALID_SNAPSHOT_VALUE'
-    );
-  });
-
   it('Record correctly snapshot on release', async () => {
     const { layToken, deployer, mockVesting } = testEnv;
 

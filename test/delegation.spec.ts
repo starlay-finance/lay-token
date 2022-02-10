@@ -84,27 +84,9 @@ makeSuite('Delegation', (testEnv: TestEnv) => {
     expect(delegatee.toString()).to.be.equal(users[3].address);
   });
 
-  it('Starts the migration', async () => {
-    const { lendToLayMigrator, lendToLayMigratorImpl } = testEnv;
-
-    const lendToLayMigratorInitializeEncoded =
-      lendToLayMigratorImpl.interface.encodeFunctionData('initialize');
-
-    const migratorAsProxy = await getContract(
-      eContractid.InitializableAdminUpgradeabilityProxy,
-      lendToLayMigrator.address
-    );
-
-    await migratorAsProxy
-      .connect(testEnv.users[0].signer)
-      .upgradeToAndCall(lendToLayMigratorImpl.address, lendToLayMigratorInitializeEncoded);
-  });
-
   it('User1 tries to delegate voting power to ZERO_ADDRESS', async () => {
     const {
       users: [, , , , , user],
-      lendToken,
-      lendToLayMigrator,
       mockVesting,
     } = testEnv;
     const lendBalance = parseEther('1000');
@@ -121,7 +103,7 @@ makeSuite('Delegation', (testEnv: TestEnv) => {
   });
 
   it('User 1 migrates 1000 LEND; checks voting and proposition power of user 2 and 3', async () => {
-    const { lendToLayMigrator, lendToken, users, mockVesting } = testEnv;
+    const { users, mockVesting } = testEnv;
     const user1 = users[1];
     const user2 = users[2];
     const user3 = users[3];
