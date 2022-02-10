@@ -29,5 +29,5 @@ task(`deploy-${TokenVesting}`, `Deploy the ${TokenVesting} contract`)
     const tokenVesting = await deployVesting(layTokenProxy.address, verify);
     await registerContractInJsonDb(TokenVesting, tokenVesting);
 
-    console.log('\tFinished TokenVesting Implementation deploymebnt.');
+    console.log('\tFinished TokenVesting Implementation deployment.');
   });
