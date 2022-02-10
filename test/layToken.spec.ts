@@ -24,7 +24,7 @@ makeSuite('LAY token', (testEnv: TestEnv) => {
   const {} = ProtocolErrors;
 
   it('Checks initial configuration', async () => {
-    const { layToken: layToken } = testEnv;
+    const { layToken } = testEnv;
 
     expect(await layToken.name()).to.be.equal('Lay Token', 'Invalid token name');
 
@@ -54,7 +54,7 @@ makeSuite('LAY token', (testEnv: TestEnv) => {
 
   it('Checks the allocation of the initial LAY supply', async () => {
     const expectedMigratorBalance = new BigNumber(13000000).times(new BigNumber(10).pow(18));
-    const expectedlDistributorBalance = new BigNumber(3000000).times(new BigNumber(10).pow(18));
+    const expectedlDistributorBalance = new BigNumber(0).times(new BigNumber(10).pow(18));
     const { layToken: layToken, lendToLayMigrator: lendToLayMigrator } = testEnv;
     const migratorBalance = await layToken.balanceOf(lendToLayMigrator.address);
     const distributorBalance = await layToken.balanceOf(testEnv.users[0].address);
@@ -88,10 +88,10 @@ makeSuite('LAY token', (testEnv: TestEnv) => {
     const { layToken, users } = testEnv;
 
     const userCountOfSnapshots = await layToken._countsSnapshots(users[0].address);
-    const snapshot = await layToken._snapshots(users[0].address, userCountOfSnapshots.sub(1));
-    expect(userCountOfSnapshots.toString()).to.be.equal('1', 'INVALID_SNAPSHOT_COUNT');
+    const snapshot = await layToken._snapshots(users[0].address, userCountOfSnapshots);
+    expect(userCountOfSnapshots.toString()).to.be.equal('0', 'INVALID_SNAPSHOT_COUNT');
     expect(snapshot.value.toString()).to.be.equal(
-      ethers.utils.parseEther('3000000'),
+      ethers.utils.parseEther('0'),
       'INVALID_SNAPSHOT_VALUE'
     );
   });

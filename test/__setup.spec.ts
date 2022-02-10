@@ -49,7 +49,6 @@ const buildTestEnv = async (deployer: Signer, secondaryWallet: Signer) => {
 
   const layTokenEncodedInitialize = layTokenImpl.interface.encodeFunctionData('initialize', [
     lendTolayMigratorProxy.address,
-    layAdmin,
     mockTransferHook.address,
   ]);
 

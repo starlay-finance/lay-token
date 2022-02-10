@@ -23,11 +23,8 @@ contract LayToken is ERC20, VersionedInitializable {
   string internal constant SYMBOL = 'LAY';
   uint8 internal constant DECIMALS = 18;
 
-  /// @dev the amount being distributed for the LEND -> LAY migration
-  uint256 internal constant MIGRATION_AMOUNT = 13000000 ether;
-
   /// @dev the amount being distributed for the PSI and PEI
-  uint256 internal constant DISTRIBUTION_AMOUNT = 3000000 ether;
+  uint256 internal constant MIGRATION_AMOUNT = 13000000 ether;
 
   uint256 public constant REVISION = 1;
 
@@ -59,11 +56,9 @@ contract LayToken is ERC20, VersionedInitializable {
   /**
    * @dev initializes the contract upon assignment to the InitializableAdminUpgradeabilityProxy
    * @param migrator the address of the LEND -> LAY migration contract
-   * @param distributor the address of the LAY distribution contract
    */
   function initialize(
     address migrator,
-    address distributor,
     ITransferHook starleyGovernance
   ) external initializer {
     uint256 chainId;
@@ -87,7 +82,6 @@ contract LayToken is ERC20, VersionedInitializable {
     _setupDecimals(DECIMALS);
     _starleyGovernance = starleyGovernance;
     _mint(migrator, MIGRATION_AMOUNT);
-    _mint(distributor, DISTRIBUTION_AMOUNT);
   }
 
   /**
