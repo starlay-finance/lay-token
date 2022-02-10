@@ -4,9 +4,6 @@ import { Signer } from 'ethers';
 import {
   getEthersSigners,
   getLayToken,
-  getLendToken,
-  getLendToLayMigrator,
-  getLendToLayMigratorImpl,
   getMockTokenVesting,
   getMockTransferHook,
 } from '../../helpers/contracts-helpers';
@@ -15,9 +12,7 @@ import { tEthereumAddress } from '../../helpers/types';
 import chai from 'chai';
 // @ts-ignore
 import bignumberChai from 'chai-bignumber';
-import { MintableErc20 } from '../../types/MintableErc20';
 import { MockTransferHook } from '../../types/MockTransferHook';
-import { LendToLayMigrator } from '../../types/LendToLayMigrator';
 import { MockTokenVesting } from '../../types/MockTokenVesting';
 
 chai.use(bignumberChai());

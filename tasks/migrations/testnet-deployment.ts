@@ -31,17 +31,12 @@ task('testnet-deployment', 'Deployment in shiden network')
     console.log('Lay ADMIN', LayAdmin);
     await DRE.run(`deploy-${eContractid.LayToken}`, { verify });
 
-    await DRE.run(`deploy-${eContractid.LendToLayMigrator}`, {
-      lendTokenAddress,
-      verify,
-    });
-
     await DRE.run(`initialize-${eContractid.LayToken}`, {
       admin: LayAdmin,
       onlyProxy: true,
     });
 
-    await DRE.run(`initialize-${eContractid.LendToLayMigrator}`, {
+    await DRE.run(`deploy-${eContractid.TokenVesting}`, {
       admin: LayAdmin,
       onlyProxy: true,
     });

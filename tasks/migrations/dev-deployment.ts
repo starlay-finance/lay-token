@@ -32,20 +32,13 @@ task('dev-deployment', 'Deployment in hardhat')
 
     await DRE.run(`deploy-${eContractid.LayToken}`, { verify });
 
-    await DRE.run(`deploy-${eContractid.LendToLayMigrator}`, {
-      lendTokenAddress,
-      verify,
-    });
-
     await DRE.run(`initialize-${eContractid.LayToken}`, {
       admin: LayAdmin,
     });
 
-    await DRE.run(`initialize-${eContractid.LendToLayMigrator}`, {
+    await DRE.run(`deploy-${eContractid.TokenVesting}`, {
       admin: LayAdmin,
     });
-
-    await DRE.run(`Lend-Migration`, {});
 
     console.log('\n👷 Finished the deployment of the Lay Token Development Enviroment. 👷');
   });

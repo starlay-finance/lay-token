@@ -3,14 +3,12 @@ import rawBRE from 'hardhat';
 
 import {
   getEthersSigners,
-  deployLendToLayMigrator,
   deployLayToken,
   deployInitializableAdminUpgradeabilityProxy,
   deployMintableErc20,
   insertContractAddressInDb,
   registerContractInJsonDb,
   deployMockTransferHook,
-  deployVesting,
   deployMockVesting,
 } from '../helpers/contracts-helpers';
 
@@ -42,12 +40,6 @@ const buildTestEnv = async (deployer: Signer, secondaryWallet: Signer) => {
   await insertContractAddressInDb(eContractid.MockTokenVesting, mockTokenVesting.address);
   await registerContractInJsonDb('LEND', mockLendToken);
 
-  const lendTolayMigratorImpl = await deployLendToLayMigrator([
-    layTokenProxy.address,
-    mockLendToken.address,
-    '1000',
-  ]);
-
   const lendTolayMigratorProxy = await deployInitializableAdminUpgradeabilityProxy();
 
   const mockTransferHook = await deployMockTransferHook();
@@ -76,13 +68,10 @@ const buildTestEnv = async (deployer: Signer, secondaryWallet: Signer) => {
 
   await insertContractAddressInDb(eContractid.LayToken, layTokenProxy.address);
 
-  await insertContractAddressInDb(eContractid.LendToLayMigrator, lendTolayMigratorProxy.address);
-
   await insertContractAddressInDb(eContractid.MintableErc20, mockLendToken.address);
 
   await insertContractAddressInDb(eContractid.MockTransferHook, mockTransferHook.address);
 
-  await insertContractAddressInDb(eContractid.LendToLayMigratorImpl, lendTolayMigratorImpl.address);
   await insertContractAddressInDb(eContractid.MockTokenVesting, mockTokenVesting.address);
 
   console.timeEnd('setup');

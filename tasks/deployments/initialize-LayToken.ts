@@ -2,9 +2,9 @@ import { task } from 'hardhat/config';
 import { eContractid } from '../../helpers/types';
 import {
   getLayToken,
-  getLendToLayMigrator,
   getLayTokenImpl,
   getContract,
+  getTokenVesting,
 } from '../../helpers/contracts-helpers';
 import { waitForTx } from '../../helpers/misc-utils';
 import { ZERO_ADDRESS } from '../../helpers/constants';
@@ -32,7 +32,7 @@ task(`initialize-${LayToken}`, `Initialize the ${LayToken} proxy contract`)
 
     const layTokenImpl = await getLayTokenImpl();
     const layToken = await getLayToken();
-    const lendToLayMigratorProxy = await getLendToLayMigrator();
+    const tokenVesting = await getTokenVesting();
 
     const layTokenProxy = await getContract<InitializableAdminUpgradeabilityProxy>(
       eContractid.InitializableAdminUpgradeabilityProxy,
@@ -53,8 +53,7 @@ task(`initialize-${LayToken}`, `Initialize the ${LayToken} proxy contract`)
     console.log('\tInitializing Lay Token and Transparent Proxy');
     // If any other testnet, initialize for development purposes
     const layTokenEncodedInitialize = layTokenImpl.interface.encodeFunctionData('initialize', [
-      lendToLayMigratorProxy.address,
-      layAdmin,
+      tokenVesting.address,
       ZERO_ADDRESS,
     ]);
 
