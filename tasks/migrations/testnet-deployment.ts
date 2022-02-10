@@ -3,19 +3,18 @@ import { HardhatRuntimeEnvironment } from 'hardhat/types';
 
 import { eContractid } from '../../helpers/types';
 import { eEthereumNetwork } from '../../helpers/types-common';
-import { getLayAdminPerNetwork, getLendTokenPerNetwork } from '../../helpers/constants';
+import { getLayAdminPerNetwork } from '../../helpers/constants';
 import { checkVerification } from '../../helpers/etherscan-verification';
 
 task('testnet-deployment', 'Deployment in shiden network')
   .addFlag(
     'verify',
-    'Verify LayToken, LendToLayMigrator, and InitializableAdminUpgradeabilityProxy contract.'
+    'Verify LayToken, TokenVesting and InitializableAdminUpgradeabilityProxy contract.'
   )
   .setAction(async ({ verify }, localBRE) => {
     const DRE: HardhatRuntimeEnvironment = await localBRE.run('set-dre');
     const network = DRE.network.name as eEthereumNetwork;
     const LayAdmin = getLayAdminPerNetwork(network);
-    const lendTokenAddress = getLendTokenPerNetwork(network);
 
     if (!LayAdmin) {
       throw Error(

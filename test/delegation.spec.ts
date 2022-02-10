@@ -89,29 +89,23 @@ makeSuite('Delegation', (testEnv: TestEnv) => {
       users: [, , , , , user],
       mockVesting,
     } = testEnv;
-    const lendBalance = parseEther('1000');
     const layBalance = parseEther('1');
 
     await mockVesting.releaseMock(user.address, layBalance);
-    // Track current power
-    const priorPowerUser = await layInstance.getPowerCurrent(user.address, '0');
-    const priorPowerUserZeroAddress = await layInstance.getPowerCurrent(ZERO_ADDRESS, '0');
 
     await expect(
       layInstance.connect(user.signer).delegateByType(ZERO_ADDRESS, '0')
     ).to.be.revertedWith('INVALID_DELEGATEE');
   });
 
-  it('User 1 migrates 1000 LEND; checks voting and proposition power of user 2 and 3', async () => {
+  it('User 1 get 1 LAY; checks voting and proposition power of user 2 and 3', async () => {
     const { users, mockVesting } = testEnv;
     const user1 = users[1];
     const user2 = users[2];
     const user3 = users[3];
 
-    const lendBalance = parseEther('1000');
     const expectedLayBalanceAfterMigration = parseEther('1');
 
-    //await lendToLayMigrator.connect(user1.signer).migrateFromLEND(lendBalance);
     await mockVesting.releaseMock(user1.address, expectedLayBalanceAfterMigration);
     const layBalanceAfterMigration = await layInstance.balanceOf(user1.address);
 
@@ -144,14 +138,13 @@ makeSuite('Delegation', (testEnv: TestEnv) => {
     expect(layBalanceAfterMigration.toString()).to.be.equal(expectedLayBalanceAfterMigration);
   });
 
-  it('User 2 migrates 1000 LEND; checks voting and proposition power of user 2', async () => {
+  it('User 2 get 1 LAY; checks voting and proposition power of user 2', async () => {
     const { users, mockVesting } = testEnv;
     const user2 = users[2];
 
     const expectedLayBalanceAfterMigration = parseEther('1');
 
     await mockVesting.releaseMock(user2.address, expectedLayBalanceAfterMigration);
-    //await lendToLayMigrator.connect(user2.signer).migrateFromLEND(lendBalance);
 
     const user2VotingPower = await layInstance.getPowerCurrent(user2.address, '0');
     const user2PropPower = await layInstance.getPowerCurrent(user2.address, '1');
@@ -166,7 +159,7 @@ makeSuite('Delegation', (testEnv: TestEnv) => {
     );
   });
 
-  it('User 3 migrates 1000 LEND; checks voting and proposition power of user 3', async () => {
+  it('User 3 get 1 LAY; checks voting and proposition power of user 3', async () => {
     const { users, mockVesting } = testEnv;
     const user3 = users[3];
 

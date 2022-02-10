@@ -10,7 +10,7 @@ import { InitializableAdminUpgradeabilityProxy } from '../../types/Initializable
 
 const { TokenVesting } = eContractid;
 
-task(`initialize-${TokenVesting}`, `Initialize the ${TokenVesting} proxy contract`)
+task(`deploy-${TokenVesting}`, `Deploy the ${TokenVesting} contract`)
   .addFlag('verify', 'Proceed with the Etherscan verification')
   .setAction(async ({ verify }, localBRE) => {
     await localBRE.run('set-dre');
@@ -26,10 +26,10 @@ task(`initialize-${TokenVesting}`, `Initialize the ${TokenVesting} proxy contrac
       layToken.address
     );
 
-    console.log('\tInitializing LendToLayMigrator Proxy and Implementation ');
+    console.log('\tInitializing TokenVesting Implementation ');
 
     const tokenVesting = await deployVesting(layTokenProxy.address, verify);
     await registerContractInJsonDb(TokenVesting, tokenVesting);
 
-    console.log('\tFinished LendToLayMigrator Proxy and Implementation initialization.');
+    console.log('\tFinished TokenVesting Implementation initialization.');
   });

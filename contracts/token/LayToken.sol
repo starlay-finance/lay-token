@@ -55,10 +55,10 @@ contract LayToken is ERC20, VersionedInitializable {
 
   /**
    * @dev initializes the contract upon assignment to the InitializableAdminUpgradeabilityProxy
-   * @param migrator the address of the LEND -> LAY migration contract
+   * @param vestingAddress the address of the vesting contract
    */
   function initialize(
-    address migrator,
+    address vestingAddress,
     ITransferHook starleyGovernance
   ) external initializer {
     uint256 chainId;
@@ -81,7 +81,7 @@ contract LayToken is ERC20, VersionedInitializable {
     _symbol = SYMBOL;
     _setupDecimals(DECIMALS);
     _starleyGovernance = starleyGovernance;
-    _mint(migrator, MIGRATION_AMOUNT);
+    _mint(vestingAddress, MIGRATION_AMOUNT);
   }
 
   /**

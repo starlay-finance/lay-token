@@ -40,15 +40,3 @@ export const getLayAdminPerNetwork = (network: eEthereumNetwork): tEthereumAddre
     },
     network
   );
-
-export const getLendTokenPerNetwork = (network: eEthereumNetwork): tEthereumAddress =>
-  getParamPerNetwork<tEthereumAddress>(
-    {
-      [eEthereumNetwork.coverage]: ZERO_ADDRESS,
-      [eEthereumNetwork.hardhat]: ZERO_ADDRESS,
-      [eEthereumNetwork.kovan]: '0x8134929c3dcb1b8b82f27f53424b959fb82182f2', // TODO: fix
-      [eEthereumNetwork.shibuya]: '0x8134929c3dcb1b8b82f27f53424b959fb82182f2', // TODO: fix
-      [eEthereumNetwork.shiden]: '0xEd93e49A2d75beA505fD4D1A0Dff745f69F2E997', // TODO: fix
-    },
-    network
-  );

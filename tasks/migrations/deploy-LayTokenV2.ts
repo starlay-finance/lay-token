@@ -4,7 +4,7 @@ import { HardhatRuntimeEnvironment } from 'hardhat/types';
 import { eEthereumNetwork } from '../../helpers/types-common';
 import { eContractid } from '../../helpers/types';
 import { checkVerification } from '../../helpers/etherscan-verification';
-import { getLayAdminPerNetwork, getLendTokenPerNetwork } from '../../helpers/constants';
+import { getLayAdminPerNetwork } from '../../helpers/constants';
 
 task('deploy-v2', 'Deployment of the Lay token V2')
   .addFlag('verify', 'Verify LayTokenV2 contract.')

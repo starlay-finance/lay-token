@@ -34,13 +34,9 @@ const buildTestEnv = async (deployer: Signer, secondaryWallet: Signer) => {
 
   const layTokenImpl = await deployLayToken();
   const layTokenProxy = await deployInitializableAdminUpgradeabilityProxy();
-  const mockLendToken = await deployMintableErc20(['LEND token', 'LEND', 18]);
   const mockTokenVesting = await deployMockVesting(layTokenProxy.address);
 
   await insertContractAddressInDb(eContractid.MockTokenVesting, mockTokenVesting.address);
-  await registerContractInJsonDb('LEND', mockLendToken);
-
-  const lendTolayMigratorProxy = await deployInitializableAdminUpgradeabilityProxy();
 
   const mockTransferHook = await deployMockTransferHook();
 
@@ -57,18 +53,7 @@ const buildTestEnv = async (deployer: Signer, secondaryWallet: Signer) => {
     )
   );
 
-  //we will not run the initialize on the migrator - will be executed by the governance to bootstrap the migration
-  await waitForTx(
-    await lendTolayMigratorProxy['initialize(address,address,bytes)'](
-      mockTokenVesting.address,
-      layAdmin,
-      '0x'
-    )
-  );
-
   await insertContractAddressInDb(eContractid.LayToken, layTokenProxy.address);
-
-  await insertContractAddressInDb(eContractid.MintableErc20, mockLendToken.address);
 
   await insertContractAddressInDb(eContractid.MockTransferHook, mockTransferHook.address);
 

@@ -6,16 +6,8 @@ import { getEthersSigners } from '../../helpers/contracts-helpers';
 import { checkVerification } from '../../helpers/etherscan-verification';
 
 task('dev-deployment', 'Deployment in hardhat')
-  .addOptionalParam(
-    'admin',
-    `The address to be added as an Admin role in Lay Token and LendToLayMigrator Transparent Proxies.`
-  )
-  .addOptionalParam('lendTokenAddress', 'The address of the LEND token smart contract.')
-  .addFlag(
-    'verify',
-    'Verify LayToken, LendToLayMigrator, and InitializableAdminUpgradeabilityProxy contract.'
-  )
-  .setAction(async ({ admin, lendTokenAddress, verify }, localBRE) => {
+  .addFlag('verify', 'Verify LayToken and InitializableAdminUpgradeabilityProxy contract.')
+  .setAction(async ({ admin, verify }, localBRE) => {
     const DRE: HardhatRuntimeEnvironment = await localBRE.run('set-dre');
 
     // If admin parameter is NOT set, the Lay Admin will be the
