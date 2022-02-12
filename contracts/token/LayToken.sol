@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: agpl-3.0
-pragma solidity 0.7.5;
+pragma solidity 0.8.11;
 
 import {ERC20} from '../open-zeppelin/ERC20.sol';
 import {ITransferHook} from '../interfaces/ITransferHook.sol';
@@ -23,11 +23,8 @@ contract LayToken is ERC20, VersionedInitializable {
   string internal constant SYMBOL = 'LAY';
   uint8 internal constant DECIMALS = 18;
 
-  /// @dev the amount being distributed for the LEND -> LAY migration
-  uint256 internal constant MIGRATION_AMOUNT = 13000000 ether;
-
   /// @dev the amount being distributed for the PSI and PEI
-  uint256 internal constant DISTRIBUTION_AMOUNT = 3000000 ether;
+  uint256 internal constant DISTRIBUTION_AMOUNT = 700000000 ether;
 
   uint256 public constant REVISION = 1;
 
@@ -58,12 +55,10 @@ contract LayToken is ERC20, VersionedInitializable {
 
   /**
    * @dev initializes the contract upon assignment to the InitializableAdminUpgradeabilityProxy
-   * @param migrator the address of the LEND -> LAY migration contract
-   * @param distributor the address of the LAY distribution contract
+   * @param vestingAddress the address of the vesting contract
    */
   function initialize(
-    address migrator,
-    address distributor,
+    address vestingAddress,
     ITransferHook starleyGovernance
   ) external initializer {
     uint256 chainId;
@@ -86,8 +81,7 @@ contract LayToken is ERC20, VersionedInitializable {
     _symbol = SYMBOL;
     _setupDecimals(DECIMALS);
     _starleyGovernance = starleyGovernance;
-    _mint(migrator, MIGRATION_AMOUNT);
-    _mint(distributor, DISTRIBUTION_AMOUNT);
+    _mint(vestingAddress, DISTRIBUTION_AMOUNT);
   }
 
   /**
@@ -193,7 +187,7 @@ contract LayToken is ERC20, VersionedInitializable {
 
     // caching the starlay governance address to avoid multiple state loads
     ITransferHook starleyGovernance = _starleyGovernance;
-    if (starleyGovernance != ITransferHook(0)) {
+    if (starleyGovernance != ITransferHook(address(0))) {
       starleyGovernance.onTransfer(from, to, amount);
     }
   }

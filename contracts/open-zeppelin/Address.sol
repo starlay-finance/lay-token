@@ -1,5 +1,4 @@
-pragma solidity ^0.7.5;
-
+pragma solidity 0.8.11;
 /**
  * @dev Collection of functions related to the address type
  */

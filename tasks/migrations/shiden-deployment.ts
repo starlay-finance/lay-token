@@ -4,18 +4,18 @@ import { HardhatRuntimeEnvironment } from 'hardhat/types';
 import { eEthereumNetwork } from '../../helpers/types-common';
 import { eContractid } from '../../helpers/types';
 import { checkVerification } from '../../helpers/etherscan-verification';
-import { getLayAdminPerNetwork, getLendTokenPerNetwork } from '../../helpers/constants';
+import { getLayAdminPerNetwork } from '../../helpers/constants';
+require('dotenv').config();
 
 task('shiden-deployment', 'Deployment in shiden network')
   .addFlag(
     'verify',
-    'Verify LayToken, LendToLayMigrator, and InitializableAdminUpgradeabilityProxy contract.'
+    'Verify LayToken, TokenVesting and InitializableAdminUpgradeabilityProxy contract.'
   )
   .setAction(async ({ verify }, localBRE) => {
     const DRE: HardhatRuntimeEnvironment = await localBRE.run('set-dre');
     const network = DRE.network.name as eEthereumNetwork;
     const LayAdmin = getLayAdminPerNetwork(network);
-    const lendTokenAddress = getLendTokenPerNetwork(network);
 
     if (!LayAdmin) {
       throw Error(
@@ -30,22 +30,14 @@ task('shiden-deployment', 'Deployment in shiden network')
 
     console.log('Lay ADMIN', LayAdmin);
     await DRE.run(`deploy-${eContractid.LayToken}`, { verify });
-
-    await DRE.run(`deploy-${eContractid.LendToLayMigrator}`, {
-      lendTokenAddress,
-      verify,
+    await DRE.run(`deploy-${eContractid.TokenVesting}`, {
+      admin: LayAdmin,
     });
 
     // The task will only initialize the proxy contract, not implementation
     await DRE.run(`initialize-${eContractid.LayToken}`, {
       admin: LayAdmin,
-      onlyProxy: true,
-    });
-
-    // The task will only initialize the proxy contract, not implementation
-    await DRE.run(`initialize-${eContractid.LendToLayMigrator}`, {
-      admin: LayAdmin,
-      onlyProxy: true,
+      verify,
     });
 
     console.log('\n✔️ Finished the deployment of the Lay Token Shiden Enviroment. ✔️');

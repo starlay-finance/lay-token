@@ -1,6 +1,7 @@
+import { MockTokenVesting } from './../types/MockTokenVesting.d';
+import { TokenVesting } from './../types/TokenVesting.d';
 import { LayTokenV2 } from './../types/LayTokenV2.d';
 import { LayToken } from './../types/LayToken.d';
-import { LendToLayMigrator } from './../types/LendToLayMigrator.d';
 import { Contract, Signer, utils, ethers } from 'ethers';
 
 import { getDb, DRE, waitForTx } from './misc-utils';
@@ -97,13 +98,13 @@ export const deployLayTokenV2 = async (verify?: boolean): Promise<LayTokenV2> =>
   return instance;
 };
 
-export const deployLendToLayMigrator = async (
-  [layToken, lendToken, layLendRatio]: [tEthereumAddress, tEthereumAddress, string],
-  verify?: boolean
-) => {
-  const id = eContractid.LendToLayMigrator;
-  const args: string[] = [layToken, lendToken, layLendRatio];
-  const instance = await deployContract<any>(id, args);
+export const deployMintableErc20 = async ([name, symbol, decimals]: [string, string, number]) =>
+  await deployContract<MintableErc20>(eContractid.MintableErc20, [name, symbol, decimals]);
+
+export const deployVesting = async (layTokenAddress: string, verify?: boolean) => {
+  const id = eContractid.TokenVesting;
+  const args = [layTokenAddress];
+  const instance = await deployContract<TokenVesting>(id, args);
   await instance.deployTransaction.wait();
   if (verify) {
     await verifyContract(id, instance.address, args);
@@ -111,8 +112,16 @@ export const deployLendToLayMigrator = async (
   return instance;
 };
 
-export const deployMintableErc20 = async ([name, symbol, decimals]: [string, string, number]) =>
-  await deployContract<MintableErc20>(eContractid.MintableErc20, [name, symbol, decimals]);
+export const deployMockVesting = async (layTokenAddress: string, verify?: boolean) => {
+  const id = eContractid.MockTokenVesting;
+  const args = [layTokenAddress];
+  const instance = await deployContract<MockTokenVesting>(id, args);
+  await instance.deployTransaction.wait();
+  if (verify) {
+    await verifyContract(id, instance.address, args);
+  }
+  return instance;
+};
 
 export const deployDoubleTransferHelper = async (layToken: tEthereumAddress, verify?: boolean) => {
   const id = eContractid.DoubleTransferHelper;
@@ -156,36 +165,6 @@ export const getLayTokenImpl = async (address?: tEthereumAddress) => {
   );
 };
 
-export const getLendToken = async (address?: tEthereumAddress) => {
-  return await getContract<any>(
-    eContractid.MintableErc20,
-    address ||
-      (
-        await getDb().get(`${eContractid.MintableErc20}.${DRE.network.name}`).value()
-      ).address
-  );
-};
-
-export const getLendToLayMigratorImpl = async (address?: tEthereumAddress) => {
-  return await getContract<LendToLayMigrator>(
-    eContractid.LendToLayMigrator,
-    address ||
-      (
-        await getDb().get(`${eContractid.LendToLayMigratorImpl}.${DRE.network.name}`).value()
-      ).address
-  );
-};
-
-export const getLendToLayMigrator = async (address?: tEthereumAddress) => {
-  return await getContract<LendToLayMigrator>(
-    eContractid.LendToLayMigrator,
-    address ||
-      (
-        await getDb().get(`${eContractid.LendToLayMigrator}.${DRE.network.name}`).value()
-      ).address
-  );
-};
-
 export const getMintableErc20 = async (address: tEthereumAddress) => {
   return await getContract<MintableErc20>(
     eContractid.MintableErc20,
@@ -212,6 +191,26 @@ export const getMockTransferHook = async (address?: tEthereumAddress) => {
     address ||
       (
         await getDb().get(`${eContractid.MockTransferHook}.${DRE.network.name}`).value()
+      ).address
+  );
+};
+
+export const getMockTokenVesting = async (address?: tEthereumAddress) => {
+  return await getContract<MockTokenVesting>(
+    eContractid.MockTokenVesting,
+    address ||
+      (
+        await getDb().get(`${eContractid.MockTokenVesting}.${DRE.network.name}`).value()
+      ).address
+  );
+};
+
+export const getTokenVesting = async (address?: tEthereumAddress) => {
+  return await getContract<TokenVesting>(
+    eContractid.TokenVesting,
+    address ||
+      (
+        await getDb().get(`${eContractid.TokenVesting}.${DRE.network.name}`).value()
       ).address
   );
 };

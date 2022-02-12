@@ -1,14 +1,14 @@
+import { InitializableAdminUpgradeabilityProxy } from './../../types/InitializableAdminUpgradeabilityProxy.d';
 import { task } from 'hardhat/config';
 import { eContractid } from '../../helpers/types';
 import {
   getLayToken,
-  getLendToLayMigrator,
   getLayTokenImpl,
   getContract,
+  getTokenVesting,
 } from '../../helpers/contracts-helpers';
 import { waitForTx } from '../../helpers/misc-utils';
 import { ZERO_ADDRESS } from '../../helpers/constants';
-import { InitializableAdminUpgradeabilityProxy } from '../../types/InitializableAdminUpgradeabilityProxy';
 
 const { LayToken } = eContractid;
 
@@ -32,7 +32,7 @@ task(`initialize-${LayToken}`, `Initialize the ${LayToken} proxy contract`)
 
     const layTokenImpl = await getLayTokenImpl();
     const layToken = await getLayToken();
-    const lendToLayMigratorProxy = await getLendToLayMigrator();
+    const tokenVesting = await getTokenVesting();
 
     const layTokenProxy = await getContract<InitializableAdminUpgradeabilityProxy>(
       eContractid.InitializableAdminUpgradeabilityProxy,
@@ -43,7 +43,13 @@ task(`initialize-${LayToken}`, `Initialize the ${LayToken} proxy contract`)
       console.log(
         `\tWARNING: Not initializing the ${LayToken} implementation, only set LAY_ADMIN to Transparent Proxy contract.`
       );
-      await waitForTx(await layTokenProxy.initialize(layTokenImpl.address, layAdmin, '0x'));
+      await waitForTx(
+        await layTokenProxy.functions['initialize(address,address,bytes)'](
+          layTokenImpl.address,
+          tokenVesting.address,
+          '0x'
+        )
+      );
       console.log(
         `\tFinished ${LayToken} Proxy initialization, but not ${LayToken} implementation.`
       );
@@ -53,13 +59,16 @@ task(`initialize-${LayToken}`, `Initialize the ${LayToken} proxy contract`)
     console.log('\tInitializing Lay Token and Transparent Proxy');
     // If any other testnet, initialize for development purposes
     const layTokenEncodedInitialize = layTokenImpl.interface.encodeFunctionData('initialize', [
-      lendToLayMigratorProxy.address,
-      layAdmin,
+      tokenVesting.address,
       ZERO_ADDRESS,
     ]);
 
     await waitForTx(
-      await layTokenProxy.initialize(layTokenImpl.address, layAdmin, layTokenEncodedInitialize)
+      await layTokenProxy['initialize(address,address,bytes)'](
+        layTokenImpl.address,
+        layAdmin,
+        layTokenEncodedInitialize
+      )
     );
 
     console.log('\tFinished Lay Token and Transparent Proxy initialization');

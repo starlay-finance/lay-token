@@ -5,14 +5,14 @@ export enum eContractid {
   LayToken = 'LayToken',
   LayTokenV2 = 'LayTokenV2',
   LayTokenImpl = 'LayTokenImpl',
-  LendToLayMigrator = 'LendToLayMigrator',
   IERC20Detailed = 'IERC20Detailed',
   AdminUpgradeabilityProxy = 'AdminUpgradeabilityProxy',
   InitializableAdminUpgradeabilityProxy = 'InitializableAdminUpgradeabilityProxy',
   MintableErc20 = 'MintableErc20',
-  LendToLayMigratorImpl = 'LendToLayMigratorImpl',
   DoubleTransferHelper = 'DoubleTransferHelper',
   MockTransferHook = 'MockTransferHook',
+  TokenVesting = 'TokenVesting',
+  MockTokenVesting = 'MockTokenVesting',
 }
 
 export enum ProtocolErrors {}

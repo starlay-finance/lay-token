@@ -84,61 +84,29 @@ makeSuite('Delegation', (testEnv: TestEnv) => {
     expect(delegatee.toString()).to.be.equal(users[3].address);
   });
 
-  it('Starts the migration', async () => {
-    const { lendToLayMigrator, lendToLayMigratorImpl } = testEnv;
-
-    const lendToLayMigratorInitializeEncoded =
-      lendToLayMigratorImpl.interface.encodeFunctionData('initialize');
-
-    const migratorAsProxy = await getContract(
-      eContractid.InitializableAdminUpgradeabilityProxy,
-      lendToLayMigrator.address
-    );
-
-    await migratorAsProxy
-      .connect(testEnv.users[0].signer)
-      .upgradeToAndCall(lendToLayMigratorImpl.address, lendToLayMigratorInitializeEncoded);
-  });
-
   it('User1 tries to delegate voting power to ZERO_ADDRESS', async () => {
     const {
       users: [, , , , , user],
-      lendToken,
-      lendToLayMigrator,
+      mockVesting,
     } = testEnv;
-    const lendBalance = parseEther('1000');
     const layBalance = parseEther('1');
 
-    // Mint LEND and migrate
-    await lendToken.connect(user.signer).mint(lendBalance);
-    await lendToken.connect(user.signer).approve(lendToLayMigrator.address, lendBalance);
-    await lendToLayMigrator.connect(user.signer).migrateFromLEND(lendBalance);
-
-    // Track current power
-    const priorPowerUser = await layInstance.getPowerCurrent(user.address, '0');
-    const priorPowerUserZeroAddress = await layInstance.getPowerCurrent(ZERO_ADDRESS, '0');
+    await mockVesting.releaseMock(user.address, layBalance);
 
     await expect(
       layInstance.connect(user.signer).delegateByType(ZERO_ADDRESS, '0')
     ).to.be.revertedWith('INVALID_DELEGATEE');
   });
 
-  it('User 1 migrates 1000 LEND; checks voting and proposition power of user 2 and 3', async () => {
-    const { lendToLayMigrator, lendToken, users } = testEnv;
+  it('User 1 get 1 LAY; checks voting and proposition power of user 2 and 3', async () => {
+    const { users, mockVesting } = testEnv;
     const user1 = users[1];
     const user2 = users[2];
     const user3 = users[3];
 
-    const lendBalance = parseEther('1000');
     const expectedLayBalanceAfterMigration = parseEther('1');
 
-    await lendToken.connect(user1.signer).mint(lendBalance);
-
-    await lendToken.connect(user1.signer).approve(lendToLayMigrator.address, lendBalance);
-
-    await lendToLayMigrator.connect(user1.signer).migrateFromLEND(lendBalance);
-
-    const lendBalanceAfterMigration = await lendToken.balanceOf(user1.address);
+    await mockVesting.releaseMock(user1.address, expectedLayBalanceAfterMigration);
     const layBalanceAfterMigration = await layInstance.balanceOf(user1.address);
 
     firstActionBlockNumber = await getCurrentBlock();
@@ -167,22 +135,16 @@ makeSuite('Delegation', (testEnv: TestEnv) => {
     );
     expect(user3VotingPower.toString()).to.be.equal('0', 'Invalid voting power for user 3');
 
-    expect(lendBalanceAfterMigration.toString()).to.be.equal('0');
     expect(layBalanceAfterMigration.toString()).to.be.equal(expectedLayBalanceAfterMigration);
   });
 
-  it('User 2 migrates 1000 LEND; checks voting and proposition power of user 2', async () => {
-    const { lendToLayMigrator, lendToken, users } = testEnv;
+  it('User 2 get 1 LAY; checks voting and proposition power of user 2', async () => {
+    const { users, mockVesting } = testEnv;
     const user2 = users[2];
 
-    const lendBalance = parseEther('1000');
     const expectedLayBalanceAfterMigration = parseEther('1');
 
-    await lendToken.connect(user2.signer).mint(lendBalance);
-
-    await lendToken.connect(user2.signer).approve(lendToLayMigrator.address, lendBalance);
-
-    await lendToLayMigrator.connect(user2.signer).migrateFromLEND(lendBalance);
+    await mockVesting.releaseMock(user2.address, expectedLayBalanceAfterMigration);
 
     const user2VotingPower = await layInstance.getPowerCurrent(user2.address, '0');
     const user2PropPower = await layInstance.getPowerCurrent(user2.address, '1');
@@ -197,18 +159,13 @@ makeSuite('Delegation', (testEnv: TestEnv) => {
     );
   });
 
-  it('User 3 migrates 1000 LEND; checks voting and proposition power of user 3', async () => {
-    const { lendToLayMigrator, lendToken, users } = testEnv;
+  it('User 3 get 1 LAY; checks voting and proposition power of user 3', async () => {
+    const { users, mockVesting } = testEnv;
     const user3 = users[3];
 
-    const lendBalance = parseEther('1000');
     const expectedLayBalanceAfterMigration = parseEther('1');
 
-    await lendToken.connect(user3.signer).mint(lendBalance);
-
-    await lendToken.connect(user3.signer).approve(lendToLayMigrator.address, lendBalance);
-
-    await lendToLayMigrator.connect(user3.signer).migrateFromLEND(lendBalance);
+    await mockVesting.releaseMock(user3.address, expectedLayBalanceAfterMigration);
 
     const user3VotingPower = await layInstance.getPowerCurrent(user3.address, '0');
     const user3PropPower = await layInstance.getPowerCurrent(user3.address, '1');

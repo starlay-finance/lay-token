@@ -1,14 +1,15 @@
+import { MockToken } from './../types/MockToken.d';
 import rawBRE from 'hardhat';
 
 import {
   getEthersSigners,
-  deployLendToLayMigrator,
   deployLayToken,
   deployInitializableAdminUpgradeabilityProxy,
   deployMintableErc20,
   insertContractAddressInDb,
   registerContractInJsonDb,
   deployMockTransferHook,
+  deployMockVesting,
 } from '../helpers/contracts-helpers';
 
 import path from 'path';
@@ -19,6 +20,7 @@ import { Signer } from 'ethers';
 import { initializeMakeSuite } from './helpers/make-suite';
 import { waitForTx, DRE } from '../helpers/misc-utils';
 import { eContractid } from '../helpers/types';
+import { parseEther } from 'ethers/lib/utils';
 
 ['misc', 'deployments', 'migrations'].forEach((folder) => {
   const tasksPath = path.join(__dirname, '../tasks', folder);
@@ -31,25 +33,15 @@ const buildTestEnv = async (deployer: Signer, secondaryWallet: Signer) => {
   const layAdmin = await secondaryWallet.getAddress();
 
   const layTokenImpl = await deployLayToken();
-
   const layTokenProxy = await deployInitializableAdminUpgradeabilityProxy();
+  const mockTokenVesting = await deployMockVesting(layTokenProxy.address);
 
-  const mockLendToken = await deployMintableErc20(['LEND token', 'LEND', 18]);
-  await registerContractInJsonDb('LEND', mockLendToken);
-
-  const lendTolayMigratorImpl = await deployLendToLayMigrator([
-    layTokenProxy.address,
-    mockLendToken.address,
-    '1000',
-  ]);
-
-  const lendTolayMigratorProxy = await deployInitializableAdminUpgradeabilityProxy();
+  await insertContractAddressInDb(eContractid.MockTokenVesting, mockTokenVesting.address);
 
   const mockTransferHook = await deployMockTransferHook();
 
   const layTokenEncodedInitialize = layTokenImpl.interface.encodeFunctionData('initialize', [
-    lendTolayMigratorProxy.address,
-    layAdmin,
+    mockTokenVesting.address,
     mockTransferHook.address,
   ]);
 
@@ -61,24 +53,11 @@ const buildTestEnv = async (deployer: Signer, secondaryWallet: Signer) => {
     )
   );
 
-  //we will not run the initialize on the migrator - will be executed by the governance to bootstrap the migration
-  await waitForTx(
-    await lendTolayMigratorProxy['initialize(address,address,bytes)'](
-      lendTolayMigratorImpl.address,
-      layAdmin,
-      '0x'
-    )
-  );
-
   await insertContractAddressInDb(eContractid.LayToken, layTokenProxy.address);
-
-  await insertContractAddressInDb(eContractid.LendToLayMigrator, lendTolayMigratorProxy.address);
-
-  await insertContractAddressInDb(eContractid.MintableErc20, mockLendToken.address);
 
   await insertContractAddressInDb(eContractid.MockTransferHook, mockTransferHook.address);
 
-  await insertContractAddressInDb(eContractid.LendToLayMigratorImpl, lendTolayMigratorImpl.address);
+  await insertContractAddressInDb(eContractid.MockTokenVesting, mockTokenVesting.address);
 
   console.timeEnd('setup');
 };

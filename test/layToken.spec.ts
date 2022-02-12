@@ -1,3 +1,4 @@
+import { parseEther } from 'ethers/lib/utils';
 import { fail } from 'assert';
 import { ethers } from 'ethers';
 import BigNumber from 'bignumber.js';
@@ -13,7 +14,6 @@ import {
 } from '../helpers/contracts-helpers';
 import {
   getLayTokenDomainSeparatorPerNetwork,
-  BUIDLEREVM_CHAINID,
   ZERO_ADDRESS,
   MAX_UINT_AMOUNT,
 } from '../helpers/constants';
@@ -24,7 +24,7 @@ makeSuite('LAY token', (testEnv: TestEnv) => {
   const {} = ProtocolErrors;
 
   it('Checks initial configuration', async () => {
-    const { layToken: layToken } = testEnv;
+    const { layToken } = testEnv;
 
     expect(await layToken.name()).to.be.equal('Lay Token', 'Invalid token name');
 
@@ -53,58 +53,20 @@ makeSuite('LAY token', (testEnv: TestEnv) => {
   });
 
   it('Checks the allocation of the initial LAY supply', async () => {
-    const expectedMigratorBalance = new BigNumber(13000000).times(new BigNumber(10).pow(18));
-    const expectedlDistributorBalance = new BigNumber(3000000).times(new BigNumber(10).pow(18));
-    const { layToken: layToken, lendToLayMigrator: lendToLayMigrator } = testEnv;
-    const migratorBalance = await layToken.balanceOf(lendToLayMigrator.address);
-    const distributorBalance = await layToken.balanceOf(testEnv.users[0].address);
+    const expectedDistributionBalance = new BigNumber(700000000).times(new BigNumber(10).pow(18));
+    const { layToken, mockVesting } = testEnv;
+    const distributedBalance = await layToken.balanceOf(mockVesting.address);
 
-    expect(migratorBalance.toString()).to.be.equal(
-      expectedMigratorBalance.toFixed(0),
-      'Invalid migrator balance'
-    );
-    expect(distributorBalance.toString()).to.be.equal(
-      expectedlDistributorBalance.toFixed(0),
-      'Invalid migrator balance'
+    expect(distributedBalance.toString()).to.be.equal(
+      expectedDistributionBalance.toFixed(0),
+      'Invalid distribution balance'
     );
   });
 
-  it('Starts the migration', async () => {
-    const { lendToLayMigrator, lendToLayMigratorImpl, users } = testEnv;
+  it('Record correctly snapshot on release', async () => {
+    const { layToken, deployer, mockVesting } = testEnv;
 
-    const lendToLayMigratorInitializeEncoded =
-      lendToLayMigratorImpl.interface.encodeFunctionData('initialize');
-
-    const migratorAsProxy = await getInitializableAdminUpgradeabilityProxy(
-      lendToLayMigrator.address
-    );
-
-    await migratorAsProxy
-      .connect(users[0].signer)
-      .upgradeToAndCall(lendToLayMigratorImpl.address, lendToLayMigratorInitializeEncoded);
-  });
-
-  it('Checks the snapshots emitted after the initial allocation', async () => {
-    const { layToken, users } = testEnv;
-
-    const userCountOfSnapshots = await layToken._countsSnapshots(users[0].address);
-    const snapshot = await layToken._snapshots(users[0].address, userCountOfSnapshots.sub(1));
-    expect(userCountOfSnapshots.toString()).to.be.equal('1', 'INVALID_SNAPSHOT_COUNT');
-    expect(snapshot.value.toString()).to.be.equal(
-      ethers.utils.parseEther('3000000'),
-      'INVALID_SNAPSHOT_VALUE'
-    );
-  });
-
-  it('Record correctly snapshot on migration', async () => {
-    const { layToken, lendToLayMigrator, deployer, lendToken } = testEnv;
-
-    await waitForTx(await lendToken.mint(ethers.utils.parseEther('2000')));
-    await waitForTx(
-      await lendToken.approve(lendToLayMigrator.address, ethers.utils.parseEther('2000'))
-    );
-    await waitForTx(await lendToLayMigrator.migrateFromLEND(ethers.utils.parseEther('2000')));
-
+    await mockVesting.releaseMock(deployer.address, parseEther('2'));
     expect((await layToken.balanceOf(deployer.address)).toString()).to.be.equal(
       ethers.utils.parseEther('2'),
       'INVALID_BALANCE_AFTER_MIGRATION'

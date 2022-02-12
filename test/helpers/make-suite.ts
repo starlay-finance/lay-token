@@ -4,9 +4,7 @@ import { Signer } from 'ethers';
 import {
   getEthersSigners,
   getLayToken,
-  getLendToken,
-  getLendToLayMigrator,
-  getLendToLayMigratorImpl,
+  getMockTokenVesting,
   getMockTransferHook,
 } from '../../helpers/contracts-helpers';
 import { tEthereumAddress } from '../../helpers/types';
@@ -14,9 +12,8 @@ import { tEthereumAddress } from '../../helpers/types';
 import chai from 'chai';
 // @ts-ignore
 import bignumberChai from 'chai-bignumber';
-import { MintableErc20 } from '../../types/MintableErc20';
 import { MockTransferHook } from '../../types/MockTransferHook';
-import { LendToLayMigrator } from '../../types/LendToLayMigrator';
+import { MockTokenVesting } from '../../types/MockTokenVesting';
 
 chai.use(bignumberChai());
 
@@ -28,10 +25,8 @@ export interface TestEnv {
   deployer: SignerWithAddress;
   users: SignerWithAddress[];
   layToken: LayToken;
-  lendToken: MintableErc20;
-  lendToLayMigrator: LendToLayMigrator;
-  lendToLayMigratorImpl: LendToLayMigrator;
   mockTransferHook: MockTransferHook;
+  mockVesting: MockTokenVesting;
 }
 
 let buidlerevmSnapshotId: string = '0x1';
@@ -45,10 +40,8 @@ const testEnv: TestEnv = {
   deployer: {} as SignerWithAddress,
   users: [] as SignerWithAddress[],
   layToken: {} as LayToken,
-  lendToken: {} as MintableErc20,
-  lendToLayMigrator: {} as LendToLayMigrator,
-  lendToLayMigratorImpl: {} as LendToLayMigrator,
   mockTransferHook: {} as MockTransferHook,
+  mockVesting: {} as MockTokenVesting,
 } as TestEnv;
 
 export async function initializeMakeSuite() {
@@ -66,10 +59,8 @@ export async function initializeMakeSuite() {
   }
   testEnv.deployer = deployer;
   testEnv.layToken = await getLayToken();
-  testEnv.lendToLayMigrator = await getLendToLayMigrator();
-  testEnv.lendToken = await getLendToken();
-  testEnv.lendToLayMigratorImpl = await getLendToLayMigratorImpl();
   testEnv.mockTransferHook = await getMockTransferHook();
+  testEnv.mockVesting = await getMockTokenVesting();
 }
 
 export function makeSuite(name: string, tests: (testEnv: TestEnv) => void) {
