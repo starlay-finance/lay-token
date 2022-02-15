@@ -90,6 +90,19 @@ const config: HardhatUserConfig = {
         count: 20,
       },
     },
+    shiden: {
+      url: 'https://rpc.shiden.astar.network:8545',
+      hardfork: HARDFORK,
+      blockGasLimit: DEFAULT_BLOCK_GAS_LIMIT,
+      gasMultiplier: DEFAULT_GAS_PRICE,
+      chainId: 336,
+      accounts: {
+        mnemonic: MNEMONIC,
+        path: MNEMONIC_PATH,
+        initialIndex: 0,
+        count: 20,
+      },
+    },
     astar: {
       url: 'https://rpc.shiden.astar.network:8545',
       hardfork: HARDFORK,

@@ -37,7 +37,6 @@ task('shiden-deployment', 'Deployment in shiden network')
     // The task will only initialize the proxy contract, not implementation
     await DRE.run(`initialize-${eContractid.LayToken}`, {
       admin: LayAdmin,
-      verify,
     });
 
     console.log('\n✔️ Finished the deployment of the Lay Token Shiden Enviroment. ✔️');

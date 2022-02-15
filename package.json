@@ -10,7 +10,7 @@
     "hardhat": "hardhat",
     "hardhat-kovan": "cross-env hardhat --network kovan",
     "hardhat-ropsten": "cross-env hardhat --network ropsten",
-    "hardhat-shiden": "cross-env hardhat --network main",
+    "hardhat-shiden": "cross-env hardhat --network shiden",
     "hardhat-shibuya": "cross-env hardhat --network shibuya",
     "hardhat-docker": "hardhat --network hardhatevm_docker",
     "hardhat help": "hardhat help",
@@ -35,11 +35,10 @@
     "shibuya:deploy-LayToken": "npm run hardhat-shibuya deploy-LayToken",
     "shibuya:initialize-LayToken": "npm run hardhat-shibuya -- initialize-LayToken --admin ${LAY_ADMIN:-''}",
     "shibuya:deploy-TokenVesting": "npm run hardhat-shibuya -- deploy-TokenVesting --verify",
-    "shiden:deployment": "npm run hardhat-shiden -- shiden-deployment --verify",
-    "shiden:deploy-LayTokenV2": "npm run hardhat-shiden deploy-LayTokenV2 --verify",
+    "shiden:deployment": "npm run hardhat-shiden -- shiden-deployment",
     "shiden:deploy-LayToken": "npm run hardhat-shiden deploy-LayToken",
-    "shiden:deploy-TokenVesting": "npm run hardhat-shiden -- deploy-TokenVesting --verify",
     "shiden:initialize-LayToken": "npm run hardhat-shiden -- initialize-LayToken --admin ${LAY_ADMIN:-''} --onlyProxy",
+    "shiden:deploy-TokenVesting": "npm run hardhat-shiden -- deploy-TokenVesting --verify",
     "ci:clean": "rm -rf ./artifacts ./cache ./types"
   },
   "devDependencies": {
