@@ -40,3 +40,16 @@ export const getLayAdminPerNetwork = (network: eEthereumNetwork): tEthereumAddre
     },
     network
   );
+
+// IncentiveController address
+export const getIncentiveControllerPerNetwork = (network: eEthereumNetwork): tEthereumAddress =>
+  getParamPerNetwork<tEthereumAddress>(
+    {
+      [eEthereumNetwork.coverage]: ZERO_ADDRESS,
+      [eEthereumNetwork.hardhat]: ZERO_ADDRESS,
+      [eEthereumNetwork.kovan]: ZERO_ADDRESS,
+      [eEthereumNetwork.shibuya]: ZERO_ADDRESS,
+      [eEthereumNetwork.shiden]: '0x51e27157845bf1B72A5493F539680203B1727438',
+    },
+    network
+  );
