@@ -6,6 +6,7 @@ import {
   getLayTokenImpl,
   getContract,
   getTokenVesting,
+  getStarlayRewardsVault,
 } from '../../helpers/contracts-helpers';
 import { waitForTx } from '../../helpers/misc-utils';
 import { ZERO_ADDRESS } from '../../helpers/constants';
@@ -33,7 +34,7 @@ task(`initialize-${LayToken}`, `Initialize the ${LayToken} proxy contract`)
     const layTokenImpl = await getLayTokenImpl();
     const layToken = await getLayToken();
     const tokenVesting = await getTokenVesting();
-
+    const rewardsVault = await getStarlayRewardsVault();
     const layTokenProxy = await getContract<InitializableAdminUpgradeabilityProxy>(
       eContractid.InitializableAdminUpgradeabilityProxy,
       layToken.address
@@ -60,6 +61,7 @@ task(`initialize-${LayToken}`, `Initialize the ${LayToken} proxy contract`)
     // If any other testnet, initialize for development purposes
     const layTokenEncodedInitialize = layTokenImpl.interface.encodeFunctionData('initialize', [
       tokenVesting.address,
+      rewardsVault.address,
       ZERO_ADDRESS,
     ]);
 

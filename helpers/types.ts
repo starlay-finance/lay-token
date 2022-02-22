@@ -13,6 +13,7 @@ export enum eContractid {
   MockTransferHook = 'MockTransferHook',
   TokenVesting = 'TokenVesting',
   MockTokenVesting = 'MockTokenVesting',
+  StarlayRewardsVault = 'StarlayRewardsVault',
 }
 
 export enum ProtocolErrors {}

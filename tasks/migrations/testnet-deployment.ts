@@ -31,7 +31,7 @@ task('testnet-deployment', 'Deployment in shiden network')
     console.log('Lay ADMIN', LayAdmin);
     await DRE.run(`deploy-${eContractid.LayToken}`, { verify });
     await DRE.run(`deploy-${eContractid.TokenVesting}`, { verify });
-
+    await DRE.run(`deploy-${eContractid.StarlayRewardsVault}`, {});
     await DRE.run(`initialize-${eContractid.LayToken}`, {
       admin: LayAdmin,
       verify,

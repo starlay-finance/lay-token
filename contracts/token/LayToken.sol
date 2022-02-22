@@ -25,6 +25,8 @@ contract LayToken is ERC20, VersionedInitializable {
 
   /// @dev the amount being distributed for the PSI and PEI
   uint256 internal constant DISTRIBUTION_AMOUNT = 700000000 ether;
+  /// @dev the amount being distribyted by liquidity miniong incentives
+  uint256 internal constant INCENTIVE_AMOUNT = 300000000 ether;
 
   uint256 public constant REVISION = 1;
 
@@ -59,6 +61,7 @@ contract LayToken is ERC20, VersionedInitializable {
    */
   function initialize(
     address vestingAddress,
+    address vaultAddress,
     ITransferHook starleyGovernance
   ) external initializer {
     uint256 chainId;
@@ -82,6 +85,7 @@ contract LayToken is ERC20, VersionedInitializable {
     _setupDecimals(DECIMALS);
     _starleyGovernance = starleyGovernance;
     _mint(vestingAddress, DISTRIBUTION_AMOUNT);
+    _mint(vaultAddress, INCENTIVE_AMOUNT);
   }
 
   /**

@@ -6,6 +6,7 @@ import {
   getLayToken,
   getMockTokenVesting,
   getMockTransferHook,
+  getStarlayRewardsVault,
 } from '../../helpers/contracts-helpers';
 import { tEthereumAddress } from '../../helpers/types';
 
@@ -14,6 +15,7 @@ import chai from 'chai';
 import bignumberChai from 'chai-bignumber';
 import { MockTransferHook } from '../../types/MockTransferHook';
 import { MockTokenVesting } from '../../types/MockTokenVesting';
+import { StarlayRewardsVault } from '../../types/StarlayRewardsVault';
 
 chai.use(bignumberChai());
 
@@ -27,6 +29,7 @@ export interface TestEnv {
   layToken: LayToken;
   mockTransferHook: MockTransferHook;
   mockVesting: MockTokenVesting;
+  rewardsVault: StarlayRewardsVault;
 }
 
 let buidlerevmSnapshotId: string = '0x1';
@@ -61,6 +64,7 @@ export async function initializeMakeSuite() {
   testEnv.layToken = await getLayToken();
   testEnv.mockTransferHook = await getMockTransferHook();
   testEnv.mockVesting = await getMockTokenVesting();
+  testEnv.rewardsVault = await getStarlayRewardsVault();
 }
 
 export function makeSuite(name: string, tests: (testEnv: TestEnv) => void) {

@@ -33,6 +33,7 @@ task('shibuya-deployment', 'Deployment in shibuya network')
     await DRE.run(`deploy-${eContractid.TokenVesting}`, {
       admin: LayAdmin,
     });
+    await DRE.run(`deploy-${eContractid.StarlayRewardsVault}`, {});
     // The task will only initialize the proxy contract, not implementation
     await DRE.run(`initialize-${eContractid.LayToken}`, {
       admin: LayAdmin,

@@ -357,6 +357,14 @@ makeSuite('LAY token V2', (testEnv: TestEnv) => {
 
   it('Checks the total supply', async () => {
     const totalSupply = await layTokenV2.totalSupplyAt('0'); // Supply remains constant due no more mints
-    expect(totalSupply).equal(parseEther('700000000'));
+    expect(totalSupply).equal(parseEther('1000000000'));
+  });
+  it('Checks the supply for liquidity mining', async () => {
+    const { rewardsVault } = testEnv;
+    expect(await layTokenV2.balanceOf(rewardsVault.address)).equal(parseEther('300000000'));
+  });
+  it('Checks the supply for vesting', async () => {
+    const { mockVesting } = testEnv;
+    expect(await layTokenV2.balanceOf(mockVesting.address)).equal(parseEther('700000000'));
   });
 });

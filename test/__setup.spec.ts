@@ -10,6 +10,7 @@ import {
   registerContractInJsonDb,
   deployMockTransferHook,
   deployMockVesting,
+  deployRewardsVault,
 } from '../helpers/contracts-helpers';
 
 import path from 'path';
@@ -35,13 +36,14 @@ const buildTestEnv = async (deployer: Signer, secondaryWallet: Signer) => {
   const layTokenImpl = await deployLayToken();
   const layTokenProxy = await deployInitializableAdminUpgradeabilityProxy();
   const mockTokenVesting = await deployMockVesting(layTokenProxy.address);
-
+  const rewardsVault = await deployRewardsVault();
   await insertContractAddressInDb(eContractid.MockTokenVesting, mockTokenVesting.address);
 
   const mockTransferHook = await deployMockTransferHook();
 
   const layTokenEncodedInitialize = layTokenImpl.interface.encodeFunctionData('initialize', [
     mockTokenVesting.address,
+    rewardsVault.address,
     mockTransferHook.address,
   ]);
 
