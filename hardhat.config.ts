@@ -104,11 +104,11 @@ const config: HardhatUserConfig = {
       },
     },
     astar: {
-      url: 'https://rpc.shiden.astar.network:8545',
+      url: 'https://rpc.astar.network:8545',
       hardfork: HARDFORK,
       blockGasLimit: DEFAULT_BLOCK_GAS_LIMIT,
       gasMultiplier: DEFAULT_GAS_PRICE,
-      chainId: 336,
+      chainId: 592,
       accounts: {
         mnemonic: MNEMONIC,
         path: MNEMONIC_PATH,
