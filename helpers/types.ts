@@ -30,4 +30,5 @@ export interface iParamsPerNetwork<T> {
   [eEthereumNetwork.kovan]: T;
   [eEthereumNetwork.shibuya]: T;
   [eEthereumNetwork.shiden]: T;
+  [eEthereumNetwork.astar]: T;
 }

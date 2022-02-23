@@ -20,5 +20,5 @@ task(`deploy-${StarlayRewardsVault}`, `Deploys the ${StarlayRewardsVault} contra
     const rewardsVault = await deployRewardsVault(verify);
     await registerContractInJsonDb(StarlayRewardsVault, rewardsVault);
 
-    console.log(`\tFinished ${StarlayRewardsVault} proxy and implementation deployment`);
+    console.log(`\tFinished ${StarlayRewardsVault} deployment`);
   });

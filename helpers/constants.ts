@@ -24,6 +24,7 @@ export const getLayTokenDomainSeparatorPerNetwork = (network: eEthereumNetwork):
       [eEthereumNetwork.kovan]: '',
       [eEthereumNetwork.shibuya]: '',
       [eEthereumNetwork.shiden]: '',
+      [eEthereumNetwork.astar]: '',
     },
     network
   );
@@ -37,19 +38,7 @@ export const getLayAdminPerNetwork = (network: eEthereumNetwork): tEthereumAddre
       [eEthereumNetwork.kovan]: '0x8134929c3dcb1b8b82f27f53424b959fb82182f2', // TODO: fix
       [eEthereumNetwork.shibuya]: '0xCBe964DC48dB9106088EB76Bb2FAD8D5a1bcdfbD', // personal wallet address. this is for only test env
       [eEthereumNetwork.shiden]: '0xCBe964DC48dB9106088EB76Bb2FAD8D5a1bcdfbD', // TODO: fix
-    },
-    network
-  );
-
-// IncentiveController address
-export const getIncentiveControllerPerNetwork = (network: eEthereumNetwork): tEthereumAddress =>
-  getParamPerNetwork<tEthereumAddress>(
-    {
-      [eEthereumNetwork.coverage]: ZERO_ADDRESS,
-      [eEthereumNetwork.hardhat]: ZERO_ADDRESS,
-      [eEthereumNetwork.kovan]: ZERO_ADDRESS,
-      [eEthereumNetwork.shibuya]: ZERO_ADDRESS,
-      [eEthereumNetwork.shiden]: '0x51e27157845bf1B72A5493F539680203B1727438',
+      [eEthereumNetwork.astar]: '0xCBe964DC48dB9106088EB76Bb2FAD8D5a1bcdfbD', // personal wallet address. this is for only test
     },
     network
   );

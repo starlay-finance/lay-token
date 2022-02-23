@@ -4,4 +4,5 @@ export enum eEthereumNetwork {
   kovan = 'kovan',
   shibuya = 'shibuya',
   shiden = 'shiden',
+  astar = 'astar',
 }
