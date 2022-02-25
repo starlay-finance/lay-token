@@ -1,0 +1,40 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "MockTransferHook",
+  "sourceName": "contracts/utils/MockTransferHook.sol",
+  "abi": [
+    {
+      "anonymous": false,
+      "inputs": [],
+      "name": "MockHookEvent",
+      "type": "event"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "onTransfer",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x608060405234801561001057600080fd5b5060f48061001f6000396000f3fe6080604052348015600f57600080fd5b506004361060285760003560e01c80634a39314914602d575b600080fd5b603c60383660046087565b603e565b005b6040517f34250cbfa6d218c1d0a9b5950b60dac352f03d00642722e501cbc86d1ea8130190600090a1505050565b80356001600160a01b0381168114608257600080fd5b919050565b600080600060608486031215609b57600080fd5b60a284606c565b925060ae60208501606c565b915060408401359050925092509256fea2646970667358221220c1c8931d176e2ad5b39dd05d0b84153783f3c6f843c7f4ffa43ccb337c65e2fd64736f6c634300080b0033",
+  "deployedBytecode": "0x6080604052348015600f57600080fd5b506004361060285760003560e01c80634a39314914602d575b600080fd5b603c60383660046087565b603e565b005b6040517f34250cbfa6d218c1d0a9b5950b60dac352f03d00642722e501cbc86d1ea8130190600090a1505050565b80356001600160a01b0381168114608257600080fd5b919050565b600080600060608486031215609b57600080fd5b60a284606c565b925060ae60208501606c565b915060408401359050925092509256fea2646970667358221220c1c8931d176e2ad5b39dd05d0b84153783f3c6f843c7f4ffa43ccb337c65e2fd64736f6c634300080b0033",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}
