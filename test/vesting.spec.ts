@@ -1,4 +1,3 @@
-import { vestingScheduleEarlyContributor } from './../helpers/vesting-helpers';
 import { TokenVesting__factory } from './../types/factories/TokenVesting__factory';
 import { Token__factory } from './../types/factories/Token__factory';
 import { Token } from './../types/Token.d';
@@ -6,11 +5,7 @@ import { ethers } from 'hardhat';
 import { getEthersSigners, newVestingSchedule } from '../helpers/contracts-helpers';
 import { makeSuite, TestEnv } from './helpers/make-suite';
 import { Signer } from 'ethers';
-import {
-  timestamp,
-  vestingScheduleInvestor,
-  vestingScheduleTeam,
-} from '../helpers/vesting-helpers';
+import { timestamp, createSchedulePerRole } from '../helpers/vesting-helpers';
 import { parseEther } from 'ethers/lib/utils';
 
 const { expect } = require('chai');
@@ -261,7 +256,10 @@ makeSuite('Delegation', (testEnv: TestEnv) => {
       const perMonth = amountTotal.div(18);
       await testToken.transfer(tokenVesting.address, amountTotal);
       const investor = await addr1.getAddress();
-      await newVestingSchedule(tokenVesting, vestingScheduleInvestor(investor, amountTotal));
+      await newVestingSchedule(
+        tokenVesting,
+        createSchedulePerRole('investor', investor, amountTotal)
+      );
       const schedule = await tokenVesting.getVestingIdAtIndex(0);
       await tokenVesting.setCurrentTime(timestamp(new Date(Date.UTC(2022, 9 - 1, 1))));
       // before the cliff
@@ -285,7 +283,7 @@ makeSuite('Delegation', (testEnv: TestEnv) => {
       const investor = await addr1.getAddress();
       await newVestingSchedule(
         tokenVesting,
-        vestingScheduleEarlyContributor(investor, amountTotal)
+        createSchedulePerRole('earlyContributor', investor, amountTotal)
       );
       const schedule = await tokenVesting.getVestingIdAtIndex(0);
       await tokenVesting.setCurrentTime(timestamp(new Date(Date.UTC(2022, 9 - 1, 1))));
@@ -308,7 +306,7 @@ makeSuite('Delegation', (testEnv: TestEnv) => {
       const per2Month = amountTotal.div(3);
       await testToken.transfer(tokenVesting.address, amountTotal);
       const investor = await addr1.getAddress();
-      await newVestingSchedule(tokenVesting, vestingScheduleTeam(investor, amountTotal));
+      await newVestingSchedule(tokenVesting, createSchedulePerRole('team', investor, amountTotal));
       const schedule = await tokenVesting.getVestingIdAtIndex(0);
       // before the cliff
       await tokenVesting.setCurrentTime(timestamp(new Date(Date.UTC(2022, 3 - 1, 1))));

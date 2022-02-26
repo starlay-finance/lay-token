@@ -66,10 +66,7 @@ export interface VestingInput extends VestingInputBase {
   amount: BigNumber;
 }
 
-export const vestingScheduleInvestor = (
-  beneficiary: tEthereumAddress,
-  total: BigNumber
-): VestingInput => {
+const vestingScheduleInvestor = (beneficiary: tEthereumAddress, total: BigNumber): VestingInput => {
   return {
     beneficiary,
     amount: total,
@@ -77,7 +74,7 @@ export const vestingScheduleInvestor = (
   };
 };
 
-export const vestingScheduleEarlyContributor = (
+const vestingScheduleEarlyContributor = (
   beneficiary: tEthereumAddress,
   total: BigNumber
 ): VestingInput => {
@@ -88,10 +85,7 @@ export const vestingScheduleEarlyContributor = (
   };
 };
 
-export const vestingScheduleTeam = (
-  beneficiary: tEthereumAddress,
-  total: BigNumber
-): VestingInput => {
+const vestingScheduleTeam = (beneficiary: tEthereumAddress, total: BigNumber): VestingInput => {
   return {
     beneficiary,
     amount: total,
