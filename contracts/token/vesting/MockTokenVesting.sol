@@ -31,6 +31,13 @@ contract MockTokenVesting is TokenVesting{
         return mockTime;
     }
 
+    function _currentTime()
+        view
+        public
+        returns(uint256){
+        return getCurrentTime();
+    }
+
     function releaseMock(
         address beneficiaryPayable,
         uint256 amount)

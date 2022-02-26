@@ -1,11 +1,17 @@
+import { vestingScheduleEarlyContributor } from './../helpers/vesting-helpers';
 import { TokenVesting__factory } from './../types/factories/TokenVesting__factory';
 import { Token__factory } from './../types/factories/Token__factory';
 import { Token } from './../types/Token.d';
 import { ethers } from 'hardhat';
-import { getEthersSigners } from '../helpers/contracts-helpers';
+import { getEthersSigners, newVestingSchedule } from '../helpers/contracts-helpers';
 import { makeSuite, TestEnv } from './helpers/make-suite';
-import { TokenVesting } from '../types/TokenVesting';
 import { Signer } from 'ethers';
+import {
+  timestamp,
+  vestingScheduleInvestor,
+  vestingScheduleTeam,
+} from '../helpers/vesting-helpers';
+import { parseEther } from 'ethers/lib/utils';
 
 const { expect } = require('chai');
 makeSuite('Delegation', (testEnv: TestEnv) => {
@@ -22,7 +28,7 @@ makeSuite('Delegation', (testEnv: TestEnv) => {
   });
   beforeEach(async function () {
     [owner, addr1, addr2] = await getEthersSigners();
-    testToken = await Token.deploy('Test Token', 'TT', 1000000);
+    testToken = await Token.deploy('Test Token', 'TT', parseEther('700000000'));
     await testToken.deployed();
   });
 
@@ -247,6 +253,72 @@ makeSuite('Delegation', (testEnv: TestEnv) => {
       await expect(
         tokenVesting.createVestingSchedule(await addr1.getAddress(), time, 0, 1, 1, false, 0)
       ).to.be.revertedWith('TokenVesting: amount must be > 0');
+    });
+    it('Should check allocation per month for investor', async function () {
+      const tokenVesting = await TokenVesting.deploy(testToken.address);
+      await tokenVesting.deployed();
+      const amountTotal = parseEther('20000000');
+      const perMonth = amountTotal.div(18);
+      await testToken.transfer(tokenVesting.address, amountTotal);
+      const investor = await addr1.getAddress();
+      await newVestingSchedule(tokenVesting, vestingScheduleInvestor(investor, amountTotal));
+      const schedule = await tokenVesting.getVestingIdAtIndex(0);
+      await tokenVesting.setCurrentTime(timestamp(new Date(Date.UTC(2022, 9 - 1, 1))));
+      // before the cliff
+      expect(await tokenVesting.computeReleasableAmount(schedule)).to.eq('0');
+      // 1 month later
+      await tokenVesting.setCurrentTime(timestamp(new Date(Date.UTC(2022, 10 - 1, 1, 0, 0, 0))));
+      expect(await tokenVesting.computeReleasableAmount(schedule)).to.eq(perMonth);
+      // 2 month later
+      await tokenVesting.setCurrentTime(timestamp(new Date(Date.UTC(2022, 10 - 1, 31, 0, 0, 0))));
+      expect(await tokenVesting.computeReleasableAmount(schedule)).to.eq(perMonth.mul(2));
+      // schedule finished
+      await tokenVesting.setCurrentTime(timestamp(new Date(Date.UTC(2024, 3 - 1, 1, 0, 0, 0))));
+      expect(await tokenVesting.computeReleasableAmount(schedule)).to.eq(amountTotal);
+    });
+    it('Should check allocation per month for early contributor', async function () {
+      const tokenVesting = await TokenVesting.deploy(testToken.address);
+      await tokenVesting.deployed();
+      const amountTotal = parseEther('100000000');
+      const perMonth = amountTotal.div(18);
+      await testToken.transfer(tokenVesting.address, amountTotal);
+      const investor = await addr1.getAddress();
+      await newVestingSchedule(
+        tokenVesting,
+        vestingScheduleEarlyContributor(investor, amountTotal)
+      );
+      const schedule = await tokenVesting.getVestingIdAtIndex(0);
+      await tokenVesting.setCurrentTime(timestamp(new Date(Date.UTC(2022, 9 - 1, 1))));
+      // before the cliff
+      expect(await tokenVesting.computeReleasableAmount(schedule)).to.eq('0');
+      // 1 month later
+      await tokenVesting.setCurrentTime(timestamp(new Date(Date.UTC(2022, 10 - 1, 1, 0, 0, 0))));
+      expect(await tokenVesting.computeReleasableAmount(schedule)).to.eq(perMonth);
+      // 2 month later
+      await tokenVesting.setCurrentTime(timestamp(new Date(Date.UTC(2022, 10 - 1, 31, 0, 0, 0))));
+      expect(await tokenVesting.computeReleasableAmount(schedule)).to.eq(perMonth.mul(2).add(1));
+      // schedule finished
+      await tokenVesting.setCurrentTime(timestamp(new Date(Date.UTC(2024, 3 - 1, 1, 0, 0, 0))));
+      expect(await tokenVesting.computeReleasableAmount(schedule)).to.eq(amountTotal);
+    });
+    it('Should check allocation per month for team', async function () {
+      const tokenVesting = await TokenVesting.deploy(testToken.address);
+      await tokenVesting.deployed();
+      const amountTotal = parseEther('25000000');
+      const per2Month = amountTotal.div(3);
+      await testToken.transfer(tokenVesting.address, amountTotal);
+      const investor = await addr1.getAddress();
+      await newVestingSchedule(tokenVesting, vestingScheduleTeam(investor, amountTotal));
+      const schedule = await tokenVesting.getVestingIdAtIndex(0);
+      // before the cliff
+      await tokenVesting.setCurrentTime(timestamp(new Date(Date.UTC(2022, 3 - 1, 1))));
+      expect(await tokenVesting.computeReleasableAmount(schedule)).to.eq('0');
+      // at 2 Apr. 2022
+      await tokenVesting.setCurrentTime(timestamp(new Date(Date.UTC(2022, 4 - 1, 2, 0, 0, 0))));
+      expect(await tokenVesting.computeReleasableAmount(schedule)).to.eq(per2Month);
+      // schedule finished
+      await tokenVesting.setCurrentTime(timestamp(new Date(Date.UTC(2022, 8 - 1, 1, 0, 0, 0))));
+      expect(await tokenVesting.computeReleasableAmount(schedule)).to.eq(amountTotal);
     });
   });
 });

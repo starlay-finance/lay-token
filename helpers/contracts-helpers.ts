@@ -1,3 +1,4 @@
+import { VestingInput } from './vesting-helpers';
 import { StarlayRewardsVault } from './../types/StarlayRewardsVault.d';
 import { MockTokenVesting } from './../types/MockTokenVesting.d';
 import { TokenVesting } from './../types/TokenVesting.d';
@@ -184,6 +185,18 @@ export const getLayTokenImpl = async (address?: tEthereumAddress) => {
       (
         await getDb().get(`${eContractid.LayTokenImpl}.${DRE.network.name}`).value()
       ).address
+  );
+};
+
+export const newVestingSchedule = async (instance: TokenVesting, input: VestingInput) => {
+  return await instance.createVestingSchedule(
+    input.beneficiary,
+    input.start,
+    input.cliff,
+    input.duration,
+    input.slicePerSeconds,
+    input.revocable,
+    input.amount
   );
 };
 
