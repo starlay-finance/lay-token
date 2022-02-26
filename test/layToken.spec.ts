@@ -7,7 +7,6 @@ import { ProtocolErrors } from '../helpers/types';
 import { eEthereumNetwork } from '../helpers/types-common';
 import { waitForTx, DRE } from '../helpers/misc-utils';
 import {
-  getInitializableAdminUpgradeabilityProxy,
   buildPermitParams,
   getSignatureFromTypedData,
   deployDoubleTransferHelper,
