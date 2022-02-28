@@ -38,7 +38,7 @@ export const getLayAdminPerNetwork = (network: eEthereumNetwork): tEthereumAddre
       [eEthereumNetwork.kovan]: '0x8134929c3dcb1b8b82f27f53424b959fb82182f2', // TODO: fix
       [eEthereumNetwork.shibuya]: '0xCBe964DC48dB9106088EB76Bb2FAD8D5a1bcdfbD', // personal wallet address. this is for only test env
       [eEthereumNetwork.shiden]: '0xCBe964DC48dB9106088EB76Bb2FAD8D5a1bcdfbD', // TODO: fix
-      [eEthereumNetwork.astar]: '0xCBe964DC48dB9106088EB76Bb2FAD8D5a1bcdfbD', // personal wallet address. this is for only test
+      [eEthereumNetwork.astar]: '0x43BB799709758c266038cd56FC6aeF38c427f39E',
     },
     network
   );
