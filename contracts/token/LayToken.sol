@@ -40,7 +40,7 @@ contract LayToken is ERC20, VersionedInitializable {
   /// @dev reference to the Lay governance contract to call (if initialized) on _beforeTokenTransfer
   /// !!! IMPORTANT The Lay governance is considered a trustable contract, being its responsibility
   /// to control all potential reentrancies by calling back the LayToken
-  ITransferHook public _starleyGovernance;
+  ITransferHook public _starlayGovernance;
 
   bytes32 public DOMAIN_SEPARATOR;
   bytes public constant EIP712_REVISION = bytes('1');
@@ -62,7 +62,7 @@ contract LayToken is ERC20, VersionedInitializable {
   function initialize(
     address vestingAddress,
     address vaultAddress,
-    ITransferHook starleyGovernance
+    ITransferHook starlayGovernance
   ) external initializer {
     uint256 chainId;
 
@@ -83,7 +83,7 @@ contract LayToken is ERC20, VersionedInitializable {
     _name = NAME;
     _symbol = SYMBOL;
     _setupDecimals(DECIMALS);
-    _starleyGovernance = starleyGovernance;
+    _starlayGovernance = starlayGovernance;
     _mint(vestingAddress, DISTRIBUTION_AMOUNT);
     _mint(vaultAddress, INCENTIVE_AMOUNT);
   }
@@ -190,9 +190,9 @@ contract LayToken is ERC20, VersionedInitializable {
     }
 
     // caching the starlay governance address to avoid multiple state loads
-    ITransferHook starleyGovernance = _starleyGovernance;
-    if (starleyGovernance != ITransferHook(address(0))) {
-      starleyGovernance.onTransfer(from, to, amount);
+    ITransferHook starlayGovernance = _starlayGovernance;
+    if (starlayGovernance != ITransferHook(address(0))) {
+      starlayGovernance.onTransfer(from, to, amount);
     }
   }
 }
