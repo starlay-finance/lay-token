@@ -18,7 +18,7 @@ task(`transfer-from-vesting`, `transfer amount from vesting`).setAction(
       throw new Error('INVALID_CHAIN_ID');
     }
 
-    console.log(`\n- Transfer vesting owner`);
+    console.log(`\n- Transfer LAY from vesting contract`);
     const vestingInstance = await getTokenVesting('0xebb855938652225212a7Dbd50Bd78Ba3e22d7B23');
     console.log(`vesting address ${vestingInstance.address}`);
     const tx = await vestingInstance.withdraw(parseEther('250000000'));
