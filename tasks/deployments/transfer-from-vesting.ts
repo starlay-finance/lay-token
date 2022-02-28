@@ -28,9 +28,7 @@ task(`transfer-from-vesting`, `transfer amount from vesting`).setAction(
     const wallet = new Wallet(privateKey);
     console.log(`vesting address ${vestingInstance.address}`);
     console.log(`owner address: ${wallet.address}`);
-    const tx = await vestingInstance
-      .connect(new Wallet(privateKey))
-      .withdraw(parseEther('250000000'));
+    const tx = await vestingInstance.connect(wallet).withdraw(parseEther('250000000'));
     tx.wait(1);
     console.log('finished transfer 250000000 $LAY');
     console.log(tx);
