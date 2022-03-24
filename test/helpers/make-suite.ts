@@ -1,3 +1,9 @@
+import { MockIncentivesController } from './../../types/MockIncentivesController.d';
+import {
+  getMockIncentivesController,
+  getStarlayRewardsVault,
+  getStarlayRewardsVaultProxy,
+} from './../../helpers/contracts-helpers';
 import { LayToken } from './../../types/LayToken.d';
 import { evmRevert, evmSnapshot, DRE } from '../../helpers/misc-utils';
 import { Signer } from 'ethers';
@@ -6,7 +12,6 @@ import {
   getLayToken,
   getMockTokenVesting,
   getMockTransferHook,
-  getStarlayRewardsVault,
 } from '../../helpers/contracts-helpers';
 import { tEthereumAddress } from '../../helpers/types';
 
@@ -30,6 +35,7 @@ export interface TestEnv {
   mockTransferHook: MockTransferHook;
   mockVesting: MockTokenVesting;
   rewardsVault: StarlayRewardsVault;
+  mockIncentivesController: MockIncentivesController;
 }
 
 let buidlerevmSnapshotId: string = '0x1';
@@ -45,6 +51,7 @@ const testEnv: TestEnv = {
   layToken: {} as LayToken,
   mockTransferHook: {} as MockTransferHook,
   mockVesting: {} as MockTokenVesting,
+  mockIncentivesController: {} as MockIncentivesController,
 } as TestEnv;
 
 export async function initializeMakeSuite() {
@@ -65,6 +72,7 @@ export async function initializeMakeSuite() {
   testEnv.mockTransferHook = await getMockTransferHook();
   testEnv.mockVesting = await getMockTokenVesting();
   testEnv.rewardsVault = await getStarlayRewardsVault();
+  testEnv.mockIncentivesController = await getMockIncentivesController();
 }
 
 export function makeSuite(name: string, tests: (testEnv: TestEnv) => void) {

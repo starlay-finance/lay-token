@@ -1,13 +1,11 @@
-import { MockToken } from './../types/MockToken.d';
+import { deployMockIncentivesController } from './../helpers/contracts-helpers';
 import rawBRE from 'hardhat';
 
 import {
   getEthersSigners,
   deployLayToken,
   deployInitializableAdminUpgradeabilityProxy,
-  deployMintableErc20,
   insertContractAddressInDb,
-  registerContractInJsonDb,
   deployMockTransferHook,
   deployMockVesting,
   deployRewardsVault,
@@ -36,14 +34,17 @@ const buildTestEnv = async (deployer: Signer, secondaryWallet: Signer) => {
   const layTokenImpl = await deployLayToken();
   const layTokenProxy = await deployInitializableAdminUpgradeabilityProxy();
   const mockTokenVesting = await deployMockVesting(layTokenProxy.address);
-  const rewardsVault = await deployRewardsVault();
   await insertContractAddressInDb(eContractid.MockTokenVesting, mockTokenVesting.address);
 
   const mockTransferHook = await deployMockTransferHook();
+  const rewardsVaultImpl = await deployRewardsVault();
+  await insertContractAddressInDb(eContractid.StarlayRewardsVaultImpl, rewardsVaultImpl.address);
+  const rewardsVaultProxy = await deployInitializableAdminUpgradeabilityProxy();
+  await insertContractAddressInDb(eContractid.StarlayRewardsVault, rewardsVaultProxy.address);
 
   const layTokenEncodedInitialize = layTokenImpl.interface.encodeFunctionData('initialize', [
     mockTokenVesting.address,
-    rewardsVault.address,
+    rewardsVaultProxy.address,
     mockTransferHook.address,
   ]);
 
@@ -54,8 +55,26 @@ const buildTestEnv = async (deployer: Signer, secondaryWallet: Signer) => {
       layTokenEncodedInitialize
     )
   );
-
-  await insertContractAddressInDb(eContractid.LayToken, layTokenProxy.address);
+  const mockIncentivesController = await deployMockIncentivesController(
+    rewardsVaultProxy.address,
+    layTokenProxy.address
+  );
+  await insertContractAddressInDb(
+    eContractid.MockIncentivesController,
+    mockIncentivesController.address
+  );
+  const rewardsVaultEncodedInitialize = rewardsVaultImpl.interface.encodeFunctionData(
+    'initialize',
+    [layTokenProxy.address, mockIncentivesController.address]
+  );
+  await waitForTx(
+    await rewardsVaultProxy['initialize(address,address,bytes)'](
+      rewardsVaultImpl.address,
+      layAdmin,
+      rewardsVaultEncodedInitialize
+    )
+  );
+  await insertContractAddressInDb(eContractid.StarlayRewardsVault, rewardsVaultProxy.address);
 
   await insertContractAddressInDb(eContractid.MockTransferHook, mockTransferHook.address);
 
