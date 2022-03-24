@@ -1,3 +1,4 @@
+import { InitializableAdminUpgradeabilityProxy__factory } from './../types/factories/InitializableAdminUpgradeabilityProxy__factory';
 import { deployMockIncentivesController } from './../helpers/contracts-helpers';
 import rawBRE from 'hardhat';
 
@@ -20,6 +21,7 @@ import { initializeMakeSuite } from './helpers/make-suite';
 import { waitForTx, DRE } from '../helpers/misc-utils';
 import { eContractid } from '../helpers/types';
 import { parseEther } from 'ethers/lib/utils';
+import { InitializableAdminUpgradeabilityProxy } from '../types/InitializableAdminUpgradeabilityProxy';
 
 ['misc', 'deployments', 'migrations'].forEach((folder) => {
   const tasksPath = path.join(__dirname, '../tasks', folder);
@@ -39,7 +41,9 @@ const buildTestEnv = async (deployer: Signer, secondaryWallet: Signer) => {
   const mockTransferHook = await deployMockTransferHook();
   const rewardsVaultImpl = await deployRewardsVault();
   await insertContractAddressInDb(eContractid.StarlayRewardsVaultImpl, rewardsVaultImpl.address);
-  const rewardsVaultProxy = await deployInitializableAdminUpgradeabilityProxy();
+  const rewardsVaultProxy = await new InitializableAdminUpgradeabilityProxy__factory(
+    deployer
+  ).deploy();
   await insertContractAddressInDb(eContractid.StarlayRewardsVault, rewardsVaultProxy.address);
 
   const layTokenEncodedInitialize = layTokenImpl.interface.encodeFunctionData('initialize', [
@@ -55,6 +59,8 @@ const buildTestEnv = async (deployer: Signer, secondaryWallet: Signer) => {
       layTokenEncodedInitialize
     )
   );
+  await insertContractAddressInDb(eContractid.LayToken, layTokenProxy.address);
+
   const mockIncentivesController = await deployMockIncentivesController(
     rewardsVaultProxy.address,
     layTokenProxy.address
