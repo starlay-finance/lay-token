@@ -1,4 +1,4 @@
-.env
+*.env
 #Buidler files
 cache
 artifacts

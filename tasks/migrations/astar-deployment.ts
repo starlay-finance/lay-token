@@ -30,9 +30,7 @@ task('astar-deployment', 'Deployment in astar network')
 
     console.log('Lay ADMIN', LayAdmin);
     await DRE.run(`deploy-${eContractid.LayToken}`, { verify });
-    await DRE.run(`deploy-${eContractid.TokenVesting}`, {
-      admin: LayAdmin,
-    });
+    await DRE.run(`deploy-${eContractid.TokenVesting}`, {});
     await DRE.run(`deploy-${eContractid.StarlayRewardsVault}`, {});
     // The task will only initialize the proxy contract, not implementation
     await DRE.run(`initialize-${eContractid.LayToken}`, {
