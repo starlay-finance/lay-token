@@ -91,7 +91,7 @@ const config: HardhatUserConfig = {
       },
     },
     shiden: {
-      url: 'https://rpc.shiden.astar.network:8545',
+      url: 'https://evm.shiden.astar.network',
       hardfork: HARDFORK,
       blockGasLimit: DEFAULT_BLOCK_GAS_LIMIT,
       gasMultiplier: DEFAULT_GAS_PRICE,
