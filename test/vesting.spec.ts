@@ -2,11 +2,16 @@ import { TokenVesting__factory } from './../types/factories/TokenVesting__factor
 import { Token__factory } from './../types/factories/Token__factory';
 import { Token } from './../types/Token.d';
 import { ethers } from 'hardhat';
-import { getEthersSigners, newVestingSchedule } from '../helpers/contracts-helpers';
+import {
+  getCurrentBlock,
+  getEthersSigners,
+  newVestingSchedule,
+} from '../helpers/contracts-helpers';
 import { makeSuite, TestEnv } from './helpers/make-suite';
 import { Signer } from 'ethers';
 import { timestamp, createSchedulePerRole } from '../helpers/vesting-helpers';
 import { parseEther } from 'ethers/lib/utils';
+import { start } from 'repl';
 
 const { expect } = require('chai');
 makeSuite('Delegation', (testEnv: TestEnv) => {
@@ -49,24 +54,37 @@ makeSuite('Delegation', (testEnv: TestEnv) => {
       const baseTime = 1622551248;
       const beneficiary = addr1;
       const startTime = baseTime;
-      const cliff = 0;
+      const cliff = 100;
       const duration = 1000;
       const slicePeriodSeconds = 1;
-      const revokable = true;
+      const revocable = true;
       const amount = 100;
       console.log('createVestingSchedule');
       // create new vesting schedule
-      await tokenVesting
-        .connect(owner)
-        .createVestingSchedule(
-          await beneficiary.getAddress(),
-          startTime,
-          cliff,
-          duration,
-          slicePeriodSeconds,
-          revokable,
-          amount
-        );
+      const tx = await tokenVesting.createVestingSchedule(
+        await beneficiary.getAddress(),
+        startTime,
+        cliff,
+        duration,
+        slicePeriodSeconds,
+        revocable,
+        amount
+      );
+      const receipt = await ethers.provider.getTransactionReceipt(tx.hash);
+      const iface = new ethers.utils.Interface([
+        'event ScheduleCreated(bytes32 vestingScheduleId,address beneficiary,uint256 start,uint256 cliff,uint256 duration,uint256 slicePeriodSeconds,bool revocable,uint256 amount)',
+      ]);
+      const data = receipt.logs[0].data;
+      const topics = receipt.logs[0].topics;
+      const event = iface.decodeEventLog('ScheduleCreated', data, topics);
+      expect(event.beneficiary).to.equal(await beneficiary.getAddress());
+      expect(event.start).to.equal(startTime);
+      expect(event.cliff).to.equal(cliff + startTime);
+      expect(event.duration).to.equal(duration);
+      expect(event.slicePeriodSeconds).to.equal(slicePeriodSeconds);
+      expect(event.revocable).to.equal(revocable);
+      expect(event.amount).to.equal(amount);
+
       expect(await tokenVesting.getVestingSchedulesCount()).to.be.equal(1);
       expect(
         await tokenVesting.getVestingSchedulesCountByBeneficiary(await beneficiary.getAddress())
@@ -100,10 +118,12 @@ makeSuite('Delegation', (testEnv: TestEnv) => {
         tokenVesting.connect(beneficiary).release(vestingScheduleId, 100)
       ).to.be.revertedWith('TokenVesting: cannot release tokens, not enough vested tokens');
 
+      const releaseTx = tokenVesting.connect(beneficiary).release(vestingScheduleId, 10);
       // release 10 tokens and check that a Transfer event is emitted with a value of 10
-      await expect(tokenVesting.connect(beneficiary).release(vestingScheduleId, 10))
+      await expect(releaseTx)
         .to.emit(testToken, 'Transfer')
         .withArgs(tokenVesting.address, await beneficiary.getAddress(), 10);
+      await expect(releaseTx).to.emit(tokenVesting, 'Released').withArgs(vestingScheduleId, 10);
 
       // check that the vested amount is now 40
       expect(
@@ -148,7 +168,9 @@ makeSuite('Delegation', (testEnv: TestEnv) => {
       );
       console.log('revoke owner');
 
-      await tokenVesting.connect(owner).revoke(vestingScheduleId);
+      expect(await tokenVesting.connect(owner).revoke(vestingScheduleId))
+        .to.emit(tokenVesting, 'Revoked')
+        .withArgs(vestingScheduleId);
 
       /*
        * TEST SUMMARY
