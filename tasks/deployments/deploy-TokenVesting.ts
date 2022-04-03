@@ -7,6 +7,7 @@ import {
   registerContractInJsonDb,
 } from '../../helpers/contracts-helpers';
 import { InitializableAdminUpgradeabilityProxy } from '../../types/InitializableAdminUpgradeabilityProxy';
+import { ZERO_ADDRESS } from '../../helpers/constants';
 
 const { TokenVesting } = eContractid;
 
@@ -25,6 +26,9 @@ task(`deploy-${TokenVesting}`, `Deploy the ${TokenVesting} contract`)
       eContractid.InitializableAdminUpgradeabilityProxy,
       layToken.address
     );
+    if (!layTokenProxy.address) {
+      throw new Error('missing layTokenProxy address');
+    }
 
     const tokenVesting = await deployVesting(layTokenProxy.address, verify);
     await registerContractInJsonDb(TokenVesting, tokenVesting);
