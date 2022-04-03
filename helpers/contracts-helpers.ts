@@ -1,3 +1,4 @@
+import { MockIncentivesController } from './../types/MockIncentivesController.d';
 import { VestingInput } from './vesting-helpers';
 import { StarlayRewardsVault } from './../types/StarlayRewardsVault.d';
 import { MockTokenVesting } from './../types/MockTokenVesting.d';
@@ -150,6 +151,15 @@ export const deployDoubleTransferHelper = async (layToken: tEthereumAddress, ver
 export const deployMockTransferHook = async () =>
   await deployContract<MockTransferHook>(eContractid.MockTransferHook, []);
 
+export const deployMockIncentivesController = async (
+  vault: tEthereumAddress,
+  token: tEthereumAddress
+) =>
+  await deployContract<MockIncentivesController>(eContractid.MockIncentivesController, [
+    vault,
+    token,
+  ]);
+
 export const deployInitializableAdminUpgradeabilityProxy = async (verify?: boolean) => {
   const id = eContractid.InitializableAdminUpgradeabilityProxy;
   const args: string[] = [];
@@ -165,6 +175,25 @@ export const getLayToken = async (address?: tEthereumAddress) => {
   return await getContract<LayToken>(
     eContractid.LayToken,
     address || (await getDb().get(`${eContractid.LayToken}.${DRE.network.name}`).value()).address
+  );
+};
+
+export const getStarlayRewardsVaultImpl = async (address?: tEthereumAddress) => {
+  return await getContract<StarlayRewardsVault>(
+    eContractid.StarlayRewardsVaultImpl,
+    address ||
+      (
+        await getDb().get(`${eContractid.StarlayRewardsVaultImpl}.${DRE.network.name}`).value()
+      ).address
+  );
+};
+export const getStarlayRewardsVaultProxy = async (address?: tEthereumAddress) => {
+  return await getContract<InitializableAdminUpgradeabilityProxy>(
+    eContractid.StarlayRewardsVaultProxy,
+    address ||
+      (
+        await getDb().get(`${eContractid.StarlayRewardsVaultProxy}.${DRE.network.name}`).value()
+      ).address
   );
 };
 
@@ -236,6 +265,16 @@ export const getMockTokenVesting = async (address?: tEthereumAddress) => {
     address ||
       (
         await getDb().get(`${eContractid.MockTokenVesting}.${DRE.network.name}`).value()
+      ).address
+  );
+};
+
+export const getMockIncentivesController = async (address?: tEthereumAddress) => {
+  return await getContract<MockIncentivesController>(
+    eContractid.MockIncentivesController,
+    address ||
+      (
+        await getDb().get(`${eContractid.MockIncentivesController}.${DRE.network.name}`).value()
       ).address
   );
 };

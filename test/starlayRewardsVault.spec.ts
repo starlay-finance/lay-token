@@ -1,33 +1,52 @@
+import { MockIncentivesController } from './../types/MockIncentivesController.d';
+import { MockIncentivesController__factory } from './../types/factories/MockIncentivesController__factory';
+import { Erc20__factory } from './../types/factories/Erc20__factory';
+import {
+  getLayToken,
+  getInitializableAdminUpgradeabilityProxy,
+} from './../helpers/contracts-helpers';
 import { parseEther } from 'ethers/lib/utils';
 import { TestEnv, makeSuite } from './helpers/make-suite';
+import { getEthersSigners } from '../helpers/contracts-helpers';
+import { ethers } from 'hardhat';
 
 const { expect } = require('chai');
 
 makeSuite('Starlay rewards vault', (testEnv: TestEnv) => {
-  it('Deployer can set incentives controller', async () => {
-    const { rewardsVault, deployer: owner, users } = testEnv;
-    const mockAddress = users[2].address;
-    await rewardsVault.connect(owner.signer).setIncentiveController(mockAddress);
-    expect(await rewardsVault.incentiveController()).equals(mockAddress);
+  it('upgradeability', async () => {
+    const { rewardsVault } = testEnv;
+    const [newProxyAdmin, proxyAdmin] = await getEthersSigners();
+    const proxyInstance = await (
+      await getInitializableAdminUpgradeabilityProxy(rewardsVault.address)
+    ).connect(proxyAdmin);
+    proxyInstance.admin();
+    await expect(proxyInstance.connect(newProxyAdmin).admin()).to.be.reverted;
+    await proxyInstance.changeAdmin(await newProxyAdmin.getAddress());
+    await proxyInstance.connect(newProxyAdmin).admin(); // not reverted
   });
-  it('ownership transfer enabled', async () => {
-    const { rewardsVault, deployer: owner, users } = testEnv;
-    const newOwner = users[2];
-    const mockAddress = users[3].address;
-    await rewardsVault.connect(owner.signer).transferOwnership(newOwner.address);
-    expect(await rewardsVault.owner()).equals(newOwner.address);
-    await expect(rewardsVault.connect(owner.signer).setIncentiveController(newOwner.address)).to.be
-      .reverted;
-    await rewardsVault.connect(newOwner.signer).setIncentiveController(mockAddress);
-    expect(await rewardsVault.incentiveController()).equals(mockAddress);
+  it('safeTransfer-call from incentivesController is enabled', async () => {
+    const { rewardsVault, mockIncentivesController } = testEnv;
+    const [user1] = await getEthersSigners();
+    const layToken = await getLayToken(await mockIncentivesController._token());
+    const vaultAssetBefore = await layToken.balanceOf(rewardsVault.address);
+    const transferAmount = parseEther('1');
+    await mockIncentivesController.transferFromVault(await user1.getAddress(), transferAmount);
+    const vaultAssetAfter = await layToken.balanceOf(rewardsVault.address);
+    expect(vaultAssetAfter).to.be.eq(vaultAssetBefore.sub(transferAmount));
   });
-  it('token transfer to incentiveController enabled', async () => {
-    const { rewardsVault, users, layToken } = testEnv;
-    const currentOwner = users[2];
-    const incentiveControllerMock = users[3].address;
-    const amountWant = parseEther('1000');
-    await rewardsVault.connect(currentOwner.signer).setIncentiveController(incentiveControllerMock);
-    await rewardsVault.connect(currentOwner.signer).transfer(layToken.address, amountWant);
-    expect(await layToken.balanceOf(incentiveControllerMock)).equals(amountWant);
+  it('safeTransfer-call from not allowed instance is disabled', async () => {
+    const { rewardsVault, mockIncentivesController } = testEnv;
+    const [user1] = await getEthersSigners();
+    const layToken = await getLayToken(await mockIncentivesController._token());
+    const dummyIncentivesController = (await ethers.getContractFactory(
+      'MockIncentivesController'
+    )) as MockIncentivesController__factory;
+    const notAllowedInstance = await dummyIncentivesController.deploy(
+      rewardsVault.address,
+      layToken.address
+    );
+    await expect(
+      notAllowedInstance.transferFromVault(await user1.getAddress(), parseEther('1'))
+    ).to.be.revertedWith('SafeERC20: low-level call failed');
   });
 });
