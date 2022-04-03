@@ -4,11 +4,14 @@ import { Erc20__factory } from './../types/factories/Erc20__factory';
 import {
   getLayToken,
   getInitializableAdminUpgradeabilityProxy,
+  deployRewardsVault,
 } from './../helpers/contracts-helpers';
 import { parseEther } from 'ethers/lib/utils';
 import { TestEnv, makeSuite } from './helpers/make-suite';
 import { getEthersSigners } from '../helpers/contracts-helpers';
 import { ethers } from 'hardhat';
+import { zeroAddress } from 'ethereumjs-util';
+import { ZERO_ADDRESS } from '../helpers/constants';
 
 const { expect } = require('chai');
 
@@ -23,6 +26,16 @@ makeSuite('Starlay rewards vault', (testEnv: TestEnv) => {
     await expect(proxyInstance.connect(newProxyAdmin).admin()).to.be.reverted;
     await proxyInstance.changeAdmin(await newProxyAdmin.getAddress());
     await proxyInstance.connect(newProxyAdmin).admin(); // not reverted
+  });
+  it('initialization', async () => {
+    const { layToken } = testEnv;
+    const vault = await deployRewardsVault(false);
+    await expect(vault.initialize(ZERO_ADDRESS, layToken.address)).to.be.revertedWith(
+      'RewardsVault: token address must not be empty'
+    );
+    await expect(vault.initialize(layToken.address, ZERO_ADDRESS)).to.be.revertedWith(
+      'RewardsVault: incentive controller not be empty'
+    );
   });
   it('safeTransfer-call from incentivesController is enabled', async () => {
     const { rewardsVault, mockIncentivesController } = testEnv;

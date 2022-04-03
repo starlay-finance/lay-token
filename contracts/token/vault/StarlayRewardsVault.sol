@@ -15,10 +15,12 @@ contract StarlayRewardsVault is VersionedInitializable {
    * @param _token the address of the reward token
    * @param _incentivesController the address of the IncentivesController
    */
-  function initialize(IERC20 _token, address _incentivesController) external initializer {
-    token = _token;
+  function initialize(address _token, address _incentivesController) external initializer {
+    require(_token != address(0), "RewardsVault: token address must not be empty");
+    require(_incentivesController != address(0), "RewardsVault: incentive controller not be empty");
+    token = IERC20(_token);
     incentivesController = _incentivesController;
-    _token.approve(_incentivesController, type(uint256).max);
+    token.approve(_incentivesController, type(uint256).max);
   }
 
   /**

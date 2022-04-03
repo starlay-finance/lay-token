@@ -12,6 +12,8 @@ import { Signer } from 'ethers';
 import { timestamp, createSchedulePerRole } from '../helpers/vesting-helpers';
 import { parseEther } from 'ethers/lib/utils';
 import { start } from 'repl';
+import { zeroAddress } from 'ethereumjs-util';
+import { ZERO_ADDRESS } from '../helpers/constants';
 
 const { expect } = require('chai');
 makeSuite('Delegation', (testEnv: TestEnv) => {
@@ -37,7 +39,29 @@ makeSuite('Delegation', (testEnv: TestEnv) => {
       const ownerBalance = await testToken.balanceOf(await owner.getAddress());
       expect(await testToken.totalSupply()).to.equal(ownerBalance);
     });
-
+    it('Should not be bested for zero_address', async function () {
+      const tokenVesting = await TokenVesting.deploy(testToken.address);
+      await tokenVesting.deployed();
+      const baseTime = 1622551248;
+      const startTime = baseTime;
+      const cliff = 100;
+      const duration = 1000;
+      const slicePeriodSeconds = 1;
+      const revocable = true;
+      const amount = 100;
+      await testToken.connect(owner).transfer(tokenVesting.address, 1000);
+      await expect(
+        tokenVesting.createVestingSchedule(
+          ZERO_ADDRESS,
+          startTime,
+          cliff,
+          duration,
+          slicePeriodSeconds,
+          revocable,
+          amount
+        )
+      ).to.be.revertedWith('TokenVesting: benefiticary must not be empty');
+    });
     it('Should vest tokens gradually', async function () {
       // deploy vesting contract
       const tokenVesting = await TokenVesting.deploy(testToken.address);
