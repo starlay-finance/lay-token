@@ -4,6 +4,7 @@ import { eEthereumNetwork } from './types-common';
 export enum eContractid {
   LayToken = 'LayToken',
   LayTokenV2 = 'LayTokenV2',
+  LayTokenV3 = 'LayTokenV3',
   LayTokenImpl = 'LayTokenImpl',
   IERC20Detailed = 'IERC20Detailed',
   AdminUpgradeabilityProxy = 'AdminUpgradeabilityProxy',
