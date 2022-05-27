@@ -1,3 +1,4 @@
+import { LayTokenV3 } from './../types/LayTokenV3.d';
 import { MockIncentivesController } from './../types/MockIncentivesController.d';
 import { VestingInput } from './vesting-helpers';
 import { StarlayRewardsVault } from './../types/StarlayRewardsVault.d';
@@ -101,6 +102,17 @@ export const deployLayTokenV2 = async (verify?: boolean): Promise<LayTokenV2> =>
   return instance;
 };
 
+export const deployLayTokenV3 = async (verify?: boolean): Promise<LayTokenV3> => {
+  const id = eContractid.LayTokenV3;
+  const args: string[] = [];
+  const instance = await deployContract<LayTokenV3>(id, args);
+  await instance.deployTransaction.wait();
+  if (verify) {
+    await verifyContract(id, instance.address, args);
+  }
+  return instance;
+};
+
 export const deployRewardsVault = async (verify?: boolean): Promise<StarlayRewardsVault> => {
   const id = eContractid.StarlayRewardsVault;
   const args: string[] = [];
@@ -194,6 +206,13 @@ export const getStarlayRewardsVaultProxy = async (address?: tEthereumAddress) =>
       (
         await getDb().get(`${eContractid.StarlayRewardsVaultProxy}.${DRE.network.name}`).value()
       ).address
+  );
+};
+
+export const getLayTokenV3 = async (address?: tEthereumAddress) => {
+  return await getContract<LayTokenV3>(
+    'LayTokenV3',
+    address || (await getDb().get(`${eContractid.LayTokenV3}.${DRE.network.name}`).value()).address
   );
 };
 
