@@ -39,7 +39,7 @@ makeSuite('LAY token V3', (testEnv: TestEnv) => {
     const LAYv3 = await deployLayTokenV3();
     const dummyVault = users[1].address;
 
-    const encodedIntialize = LAYv3.interface.encodeFunctionData('initialize', [dummyVault]);
+    const encodedIntialize = LAYv3.interface.encodeFunctionData('initialize');
 
     await layTokenProxy.connect(users[0].signer).upgradeToAndCall(LAYv3.address, encodedIntialize);
 

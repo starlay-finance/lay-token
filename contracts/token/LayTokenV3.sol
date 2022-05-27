@@ -17,6 +17,7 @@ contract LayTokenV3 is GovernancePowerDelegationERC20, VersionedInitializable {
   string internal constant NAME = 'Lay Token';
   string internal constant SYMBOL = 'LAY';
   uint8 internal constant DECIMALS = 18;
+  address internal immutable VAULT = 0x43822E69852Ca59211bBC1Bd429feAb6A62A9f44;
 
   uint256 public constant REVISION = 3;
 
@@ -53,8 +54,8 @@ contract LayTokenV3 is GovernancePowerDelegationERC20, VersionedInitializable {
   /**
    * @dev initializes the contract upon assignment to the InitializableAdminUpgradeabilityProxy.  Migrate liquidity mining incentives to new vault.
    */
-  function initialize(address vault) external initializer {
-    ERC20(this).transfer(vault, balanceOf(address(this)));
+  function initialize() external initializer {
+    ERC20(this).transfer(VAULT, balanceOf(address(this)));
   }
 
   /**
