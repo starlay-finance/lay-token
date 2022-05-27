@@ -1,3 +1,4 @@
+import { LayTokenV3 } from './../types/LayTokenV3.d';
 import { MockIncentivesController } from './../types/MockIncentivesController.d';
 import { VestingInput } from './vesting-helpers';
 import { StarlayRewardsVault } from './../types/StarlayRewardsVault.d';
