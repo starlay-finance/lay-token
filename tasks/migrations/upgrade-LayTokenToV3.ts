@@ -28,7 +28,7 @@ task(`upgrade-${LayTokenV3}`, `Initialize the ${LayTokenV3} proxy contract`).set
 
     console.log(`\n- ${LayTokenV3} initialization`);
 
-    const layTokenV3 = await getLayTokenV3('0x2d10e23201861AFCa95Af0126d79C5a4D1bd277d');
+    const layTokenV3 = await getLayTokenV3('0x9d7034334991d31859610d7EdD1E8ff009B98De0');
     const layToken = await getLayToken('0xc4335B1b76fA6d52877b3046ECA68F6E708a27dd');
     const layTokenProxy = await getContract<InitializableAdminUpgradeabilityProxy>(
       eContractid.InitializableAdminUpgradeabilityProxy,
