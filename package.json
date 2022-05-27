@@ -43,6 +43,7 @@
     "astar:deployment": "npm run hardhat-astar -- astar-deployment",
     "astar:deploy-LayToken": "npm run hardhat-astar deploy-LayToken",
     "astar:initialize-LayToken": "npm run hardhat-astar -- initialize-LayToken --admin ${LAY_ADMIN:-''} --onlyProxy",
+    "astar:upgrade-LayToken-toV3": "npm run hardhat-astar -- upgrade-LayTokenV3",
     "astar:deploy-TokenVesting": "npm run hardhat-astar -- deploy-TokenVesting --verify",
     "ci:clean": "rm -rf ./artifacts ./cache ./types"
   },
