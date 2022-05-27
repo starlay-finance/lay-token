@@ -55,7 +55,7 @@ contract LayTokenV3 is GovernancePowerDelegationERC20, VersionedInitializable {
    * @dev initializes the contract upon assignment to the InitializableAdminUpgradeabilityProxy.  Migrate liquidity mining incentives to new vault.
    */
   function initialize() external initializer {
-    ERC20(this).transferFrom(address(this), VAULT, balanceOf(address(this)));
+    _transfer(address(this), VAULT, balanceOf(address(this)));
   }
 
   /**
